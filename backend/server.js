@@ -1,218 +1,76 @@
-const cors = 
-require("cors");
-
 const express = require("express");
 const sqlite3 = require("sqlite3").verbose();
+const bcrypt = require("bcrypt");
 const cors = require("cors");
-const bcrypt = require("bcryptjs");
 
 const app = express();
+
+const PORT = process.env.PORT || 3000;
+
+
+// ======================================
+// CORS
+// ======================================
 
 app.use(
 
     cors({
 
-        origin:
-        "https://monumental-semolina-800ea2.netlify.app",
+        origin: "*",
 
-        methods:[
+        methods: [
             "GET",
             "POST",
             "PUT",
-            "DELETE"
+            "DELETE",
+            "OPTIONS"
         ],
 
-        credentials:true
+        allowedHeaders: [
+            "Content-Type",
+            "Authorization"
+        ]
 
     })
 
 );
+
+
+// ======================================
+// MIDDLEWARES
+// ======================================
+
 app.use(express.json());
 
+app.use(
+
+    express.urlencoded({
+
+        extended: true
+
+    })
+
+);
 
 
-// =========================
+// ======================================
 // DATABASE
-// =========================
+// ======================================
 
-const db =
-new sqlite3.Database("./database.db");
+const db = new sqlite3.Database(
 
+    "./database.db",
 
-// =========================
-// TABLA USUARIOS
-// =========================
-
-db.run(`
-
-CREATE TABLE IF NOT EXISTS usuarios(
-
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    nombre TEXT,
-
-    correo TEXT UNIQUE,
-
-    password TEXT,
-
-    rol TEXT
-
-)
-
-`);
-
-
-// =========================
-// TABLA PRODUCTOS
-// =========================
-
-db.run(`
-
-CREATE TABLE IF NOT EXISTS productos(
-
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    nombre TEXT,
-
-    precio REAL,
-
-    cantidad INTEGER,
-
-    categoria TEXT,
-
-    imagen TEXT
-
-)
-
-`);
-
-
-// =========================
-// TABLA COMPRAS
-// =========================
-
-db.run(`
-
-CREATE TABLE IF NOT EXISTS compras(
-
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    usuario_id INTEGER,
-
-    productos TEXT,
-
-    total REAL,
-
-    fecha TEXT
-
-)
-
-`);
-
-db.run(`
-
-CREATE TABLE IF NOT EXISTS ventas(
-
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    producto_id INTEGER,
-
-    nombre_producto TEXT,
-
-    precio REAL,
-
-    cantidad INTEGER,
-
-    usuario_id INTEGER,
-
-    fecha TEXT
-
-)
-
-`);
-
-
-// =========================
-// INSERTAR PRODUCTOS DEMO
-// =========================
-
-db.get(
-
-    `
-    SELECT COUNT(*) as total
-    FROM productos
-    `,
-
-    [],
-
-    (err,row)=>{
+    (err)=>{
 
         if(err){
 
             console.log(err);
 
-            return;
-        }
-
-        if(row.total === 0){
-
-            db.run(`
-
-            INSERT INTO productos
-            (
-                nombre,
-                precio,
-                cantidad,
-                categoria,
-                imagen
-            )
-
-            VALUES
-
-            (
-                'Laptop ASUS ROG',
-                9500,
-                5,
-                'Laptops',
-                'https://images.unsplash.com/photo-1517336714739-489689fd1ca8'
-            ),
-
-            (
-                'iPhone 15 Pro',
-                12500,
-                8,
-                'Celulares',
-                'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9'
-            ),
-
-            (
-                'AirPods Pro',
-                2200,
-                10,
-                'Audifonos',
-                'https://images.unsplash.com/photo-1588423771073-b8903fbb85b5'
-            ),
-
-            (
-                'Monitor Gamer MSI',
-                3200,
-                7,
-                'Monitores',
-                'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf'
-            ),
-
-            (
-                'Teclado Mecánico RGB',
-                850,
-                15,
-                'Accesorios',
-                'https://images.unsplash.com/photo-1511467687858-23d96c32e4ae'
-            )
-
-            `);
+        }else{
 
             console.log(
-                "Productos demo insertados"
+                "SQLite conectado"
             );
 
         }
@@ -222,217 +80,116 @@ db.get(
 );
 
 
-// =========================
-// CLAVE ADMIN
-// =========================
+// ======================================
+// CREAR TABLAS
+// ======================================
 
-const ADMIN_PASSWORD =
-"123456";
-
-
-// =========================
-// REGISTER
-// =========================
-
-app.post("/register",(req,res)=>{
-
-    const {
-
-        nombre,
-        correo,
-        password,
-        rol,
-        claveAdmin
-
-    } = req.body;
+db.serialize(()=>{
 
 
-    // VALIDAR
-    if(
-        !nombre ||
-        !correo ||
-        !password ||
-        !rol
-    ){
+    // USUARIOS
+    db.run(`
 
-        return res.status(400).json({
+        CREATE TABLE IF NOT EXISTS usuarios(
 
-            mensaje:
-            "Completa todos los campos"
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-        });
+            nombre TEXT,
 
-    }
+            correo TEXT UNIQUE,
 
+            password TEXT,
 
-    // VALIDAR ADMIN
-    if(rol === "admin"){
+            rol TEXT
 
-        if(claveAdmin !== "123456"){
-
-            return res.status(401).json({
-
-                mensaje:
-                "Clave de administrador incorrecta"
-
-            });
-
-        }
-
-    }
-
-
-    // ENCRIPTAR
-    const passwordHash =
-    bcrypt.hashSync(password,10);
-
-
-    // INSERTAR
-    db.run(
-
-        `
-        INSERT INTO usuarios
-        (
-            nombre,
-            correo,
-            password,
-            rol
         )
-        VALUES(?,?,?,?)
-        `,
 
-        [
+    `);
 
-            nombre,
-            correo,
-            passwordHash,
-            rol
 
-        ],
+    // PRODUCTOS
+    db.run(`
 
-        function(err){
+        CREATE TABLE IF NOT EXISTS productos(
 
-            if(err){
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-                console.log(err);
+            nombre TEXT,
 
-                return res.status(500).json({
+            precio REAL,
 
-                    mensaje:
-                    "Correo ya registrado"
+            cantidad INTEGER,
 
-                });
+            categoria TEXT,
 
-            }
+            imagen TEXT
 
-            res.json({
+        )
 
-                mensaje:
-                "Usuario registrado correctamente"
+    `);
 
-            });
 
-        }
+    // COMPRAS
+    db.run(`
 
-    );
+        CREATE TABLE IF NOT EXISTS compras(
 
-});
-// =========================
-// LOGIN
-// =========================
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-app.post("/login",(req,res)=>{
+            usuario_id INTEGER,
 
-    const {
+            producto_id INTEGER,
 
-        correo,
-        password
+            nombre_producto TEXT,
 
-    } = req.body;
+            precio REAL,
 
-    db.get(
+            cantidad INTEGER,
 
-        `
-        SELECT * FROM usuarios
-        WHERE correo = ?
-        `,
+            total REAL,
 
-        [correo],
+            fecha DATETIME DEFAULT CURRENT_TIMESTAMP
 
-        (err,usuario)=>{
+        )
 
-            if(err){
-
-                return res.status(500).json({
-
-                    error:err.message
-
-                });
-
-            }
-
-            if(!usuario){
-
-                return res.status(404).json({
-
-                    mensaje:
-                    "Usuario no encontrado"
-
-                });
-
-            }
-
-            // VALIDAR PASSWORD
-            const validar =
-            bcrypt.compareSync(
-
-                password,
-                usuario.password
-
-            );
-
-            if(!validar){
-
-                return res.status(401).json({
-
-                    mensaje:
-                    "Contraseña incorrecta"
-
-                });
-
-            }
-
-            res.json({
-
-                mensaje:
-                "Login correcto",
-
-                usuario
-
-            });
-
-        }
-
-    );
+    `);
 
 });
 
 
-// =========================
+// ======================================
+// RUTA PRINCIPAL
+// ======================================
+
+app.get("/",(req,res)=>{
+
+    res.json({
+
+        mensaje:
+        "API TECHNOVA funcionando"
+
+    });
+
+});
+
+
+// ======================================
 // OBTENER PRODUCTOS
-// =========================
+// ======================================
 
 app.get("/productos",(req,res)=>{
 
     db.all(
 
         `
-        SELECT * FROM productos
+        SELECT *
+        FROM productos
+        ORDER BY id DESC
         `,
 
         [],
 
-        (err,productos)=>{
+        (err,rows)=>{
 
             if(err){
 
@@ -444,7 +201,7 @@ app.get("/productos",(req,res)=>{
 
             }
 
-            res.json(productos);
+            res.json(rows);
 
         }
 
@@ -453,9 +210,9 @@ app.get("/productos",(req,res)=>{
 });
 
 
-// =========================
+// ======================================
 // AGREGAR PRODUCTO
-// =========================
+// ======================================
 
 app.post("/productos",(req,res)=>{
 
@@ -469,7 +226,7 @@ app.post("/productos",(req,res)=>{
 
     } = req.body;
 
-    // VALIDAR
+
     if(
         !nombre ||
         !precio ||
@@ -485,6 +242,7 @@ app.post("/productos",(req,res)=>{
         });
 
     }
+
 
     db.run(
 
@@ -506,7 +264,7 @@ app.post("/productos",(req,res)=>{
             precio,
             cantidad,
             categoria,
-            imagen || ""
+            imagen
 
         ],
 
@@ -536,52 +294,9 @@ app.post("/productos",(req,res)=>{
 });
 
 
-// =========================
-// ELIMINAR PRODUCTO
-// =========================
-
-app.delete("/productos/:id",(req,res)=>{
-
-    const id =
-    req.params.id;
-
-    db.run(
-
-        `
-        DELETE FROM productos
-        WHERE id = ?
-        `,
-
-        [id],
-
-        function(err){
-
-            if(err){
-
-                return res.status(500).json({
-
-                    error:err.message
-
-                });
-
-            }
-
-            res.json({
-
-                mensaje:
-                "Producto eliminado"
-
-            });
-
-        }
-
-    );
-
-});
-
-// =========================
+// ======================================
 // EDITAR PRODUCTO
-// =========================
+// ======================================
 
 app.put("/productos/:id",(req,res)=>{
 
@@ -650,63 +365,299 @@ app.put("/productos/:id",(req,res)=>{
 
 });
 
-// =========================
-// COMPRAR
-// =========================
 
-app.post("/comprar",(req,res)=>{
+// ======================================
+// ELIMINAR PRODUCTO
+// ======================================
+
+app.delete("/productos/:id",(req,res)=>{
+
+    const id =
+    req.params.id;
+
+
+    db.run(
+
+        `
+        DELETE FROM productos
+        WHERE id = ?
+        `,
+
+        [id],
+
+        function(err){
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                mensaje:
+                "Producto eliminado"
+
+            });
+
+        }
+
+    );
+
+});
+
+
+// ======================================
+// REGISTER
+// ======================================
+
+app.post("/register",(req,res)=>{
 
     const {
 
-        usuario_id,
-        carrito,
-        total
+        nombre,
+        correo,
+        password,
+        rol,
+        claveAdmin
 
     } = req.body;
 
+
     // VALIDAR
     if(
-        !usuario_id ||
-        !carrito ||
-        carrito.length === 0
+        !nombre ||
+        !correo ||
+        !password ||
+        !rol
     ){
 
         return res.status(400).json({
 
             mensaje:
-            "Carrito vacío"
+            "Completa todos los campos"
 
         });
 
     }
 
-    const fecha =
-    new Date()
-    .toLocaleString();
 
-    // GUARDAR COMPRA
+    // VALIDAR ADMIN
+    if(rol === "admin"){
+
+        if(claveAdmin !== "123456"){
+
+            return res.status(401).json({
+
+                mensaje:
+                "Clave admin incorrecta"
+
+            });
+
+        }
+
+    }
+
+
+    // HASH PASSWORD
+    const passwordHash =
+    bcrypt.hashSync(password,10);
+
+
+    // INSERTAR USUARIO
     db.run(
 
         `
-        INSERT INTO compras
+        INSERT INTO usuarios
         (
-            usuario_id,
-            productos,
-            total,
-            fecha
+            nombre,
+            correo,
+            password,
+            rol
         )
         VALUES(?,?,?,?)
         `,
 
         [
 
+            nombre,
+            correo,
+            passwordHash,
+            rol
+
+        ],
+
+        function(err){
+
+            if(err){
+
+                console.log(err);
+
+                return res.status(500).json({
+
+                    mensaje:
+                    "Correo ya registrado"
+
+                });
+
+            }
+
+            res.json({
+
+                mensaje:
+                "Usuario registrado correctamente"
+
+            });
+
+        }
+
+    );
+
+});
+
+
+// ======================================
+// LOGIN
+// ======================================
+
+app.post("/login",(req,res)=>{
+
+    const {
+
+        correo,
+        password
+
+    } = req.body;
+
+
+    db.get(
+
+        `
+        SELECT *
+        FROM usuarios
+        WHERE correo = ?
+        `,
+
+        [correo],
+
+        (err,usuario)=>{
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+
+            if(!usuario){
+
+                return res.status(401).json({
+
+                    mensaje:
+                    "Usuario no encontrado"
+
+                });
+
+            }
+
+
+            const valido =
+            bcrypt.compareSync(
+
+                password,
+                usuario.password
+
+            );
+
+
+            if(!valido){
+
+                return res.status(401).json({
+
+                    mensaje:
+                    "Contraseña incorrecta"
+
+                });
+
+            }
+
+
+            res.json({
+
+                mensaje:
+                "Login correcto",
+
+                usuario:{
+
+                    id:usuario.id,
+                    nombre:usuario.nombre,
+                    correo:usuario.correo,
+                    rol:usuario.rol
+
+                }
+
+            });
+
+        }
+
+    );
+
+});
+
+
+// ======================================
+// REALIZAR COMPRA
+// ======================================
+
+app.post("/compras",(req,res)=>{
+
+    const {
+
+        usuario_id,
+        producto_id,
+        nombre_producto,
+        precio,
+        cantidad
+
+    } = req.body;
+
+
+    const total =
+    Number(precio) *
+    Number(cantidad);
+
+
+    db.run(
+
+        `
+        INSERT INTO compras
+        (
             usuario_id,
+            producto_id,
+            nombre_producto,
+            precio,
+            cantidad,
+            total
+        )
+        VALUES(?,?,?,?,?,?)
+        `,
 
-            JSON.stringify(carrito),
+        [
 
-            total,
-
-            fecha
+            usuario_id,
+            producto_id,
+            nombre_producto,
+            precio,
+            cantidad,
+            total
 
         ],
 
@@ -722,22 +673,26 @@ app.post("/comprar",(req,res)=>{
 
             }
 
-            // DESCONTAR STOCK
-            carrito.forEach(producto=>{
 
-                db.run(
+            // RESTAR STOCK
+            db.run(
 
-                    `
-                    UPDATE productos
-                    SET cantidad = cantidad - 1
-                    WHERE id = ?
-                    `,
+                `
+                UPDATE productos
+                SET cantidad =
+                cantidad - ?
+                WHERE id = ?
+                `,
 
-                    [producto.id]
+                [
 
-                );
+                    cantidad,
+                    producto_id
 
-            });
+                ]
+
+            );
+
 
             res.json({
 
@@ -753,26 +708,28 @@ app.post("/comprar",(req,res)=>{
 });
 
 
-// =========================
+// ======================================
 // HISTORIAL COMPRAS
-// =========================
+// ======================================
 
 app.get("/compras/:usuario_id",(req,res)=>{
 
     const usuario_id =
     req.params.usuario_id;
 
+
     db.all(
 
         `
-        SELECT * FROM compras
+        SELECT *
+        FROM compras
         WHERE usuario_id = ?
-        ORDER BY id DESC
+        ORDER BY fecha DESC
         `,
 
         [usuario_id],
 
-        (err,compras)=>{
+        (err,rows)=>{
 
             if(err){
 
@@ -784,42 +741,7 @@ app.get("/compras/:usuario_id",(req,res)=>{
 
             }
 
-            res.json(compras);
-
-        }
-
-    );
-
-});
-
-// =========================
-// OBTENER VENTAS
-// =========================
-
-app.get("/ventas",(req,res)=>{
-
-    db.all(
-
-        `
-        SELECT * FROM ventas
-        ORDER BY id DESC
-        `,
-
-        [],
-
-        (err,ventas)=>{
-
-            if(err){
-
-                return res.status(500).json({
-
-                    error:err.message
-
-                });
-
-            }
-
-            res.json(ventas);
+            res.json(rows);
 
         }
 
@@ -828,14 +750,16 @@ app.get("/ventas",(req,res)=>{
 });
 
 
-// =========================
-// SERVIDOR
-// =========================
+// ======================================
+// INICIAR SERVIDOR
+// ======================================
 
-app.listen(3000,()=>{
+app.listen(PORT,()=>{
 
     console.log(
-        "Servidor funcionando en puerto 3000"
+
+        `Servidor funcionando en puerto ${PORT}`
+
     );
 
 });
