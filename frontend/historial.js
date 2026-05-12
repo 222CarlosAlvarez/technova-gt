@@ -1,14 +1,26 @@
-const usuario =
-obtenerUsuario();
+// ======================================
+// INICIO
+// ======================================
 
-verificarLogin();
+window.onload = ()=>{
+
+    verificarLogin();
+
+    cargarHistorial();
+
+};
 
 
-// =========================
+
+// ======================================
 // CARGAR HISTORIAL
-// =========================
+// ======================================
 
 async function cargarHistorial(){
+
+    const usuario =
+    obtenerUsuario();
+
 
     try{
 
@@ -19,27 +31,29 @@ async function cargarHistorial(){
 
         );
 
+
         const compras =
         await respuesta.json();
 
 
         const contenedor =
         document.getElementById(
-            "historial"
+            "contenedorHistorial"
         );
 
-        contenedor.innerHTML = "";
+
+        contenedor.innerHTML =
+        "";
 
 
+        // SI NO HAY COMPRAS
         if(compras.length === 0){
 
             contenedor.innerHTML = `
 
-            <p>
-
-            No hay compras
-
-            </p>
+                <h3>
+                    No hay compras registradas
+                </h3>
 
             `;
 
@@ -48,66 +62,44 @@ async function cargarHistorial(){
         }
 
 
-        compras.forEach(compra=>{
+        compras.forEach((compra)=>{
 
-            const productos =
-            JSON.parse(
-                compra.productos
-            );
 
             contenedor.innerHTML += `
 
-            <div class="card">
+                <div class="card-producto">
 
-                <div class="card-content">
-
-                    <h2>
-
-                    Compra #${compra.id}
-
-                    </h2>
-
-                    <p>
-
-                    Fecha:
-                    ${compra.fecha}
-
-                    </p>
-
-                    <p>
-
-                    Total:
-                    Q${Number(compra.total)
-                    .toFixed(2)}
-
-                    </p>
-
-                    <hr>
 
                     <h3>
-
-                    Productos:
-
+                        ${compra.nombre_producto}
                     </h3>
 
-                    ${productos.map(producto=>
 
-                        `
+                    <p>
+                        Precio:
+                        Q${compra.precio}
+                    </p>
 
-                        <p>
 
-                        • ${producto.nombre}
-                        - Q${producto.precio}
+                    <p>
+                        Cantidad:
+                        ${compra.cantidad}
+                    </p>
 
-                        </p>
 
-                        `
+                    <p>
+                        Total:
+                        Q${compra.total}
+                    </p>
 
-                    ).join("")}
+
+                    <p>
+                        Fecha:
+                        ${compra.fecha}
+                    </p>
+
 
                 </div>
-
-            </div>
 
             `;
 
@@ -117,9 +109,10 @@ async function cargarHistorial(){
 
         console.log(error);
 
+        alert(
+            "Error cargando historial"
+        );
+
     }
 
 }
-
-
-cargarHistorial();

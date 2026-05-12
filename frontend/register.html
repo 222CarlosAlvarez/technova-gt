@@ -3,144 +3,162 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<title>Registro - TECHNOVA GT</title>
+    <title>
+        Registro
+    </title>
 
-<link rel="stylesheet"
-href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 
 </head>
 
 <body>
 
 
-<!-- =========================
-NAVBAR
-========================= -->
+    <!-- HEADER -->
 
-<header class="navbar">
+    <header class="header">
 
-    <h1>
 
-    TECHNOVA GT
+        <h1>
+            TECHNOVA GT
+        </h1>
 
-    </h1>
 
-    <div>
+        <nav>
 
-        <a href="index.html">
-
-            <button>
-
+            <a href="index.html">
                 Inicio
+            </a>
 
+            <a href="tienda.html">
+                Tienda
+            </a>
+
+            <a href="login.html">
+                Iniciar Sesión
+            </a>
+
+        </nav>
+
+
+    </header>
+
+
+
+    <!-- FORMULARIO -->
+
+    <main class="container">
+
+
+        <div class="form-login">
+
+
+            <h2>
+                Crear Cuenta
+            </h2>
+
+
+
+            <input
+                type="text"
+                id="nombre"
+                placeholder="Nombre completo"
+            >
+
+
+
+            <input
+                type="email"
+                id="correo"
+                placeholder="Correo electrónico"
+            >
+
+
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Contraseña"
+            >
+
+
+
+            <!-- ROL -->
+
+            <select
+                id="rol"
+                onchange="mostrarClaveAdmin()"
+            >
+
+                <option value="usuario">
+                    Usuario
+                </option>
+
+                <option value="admin">
+                    Administrador
+                </option>
+
+            </select>
+
+
+
+            <!-- CLAVE ADMIN -->
+
+            <div
+                id="divClaveAdmin"
+                style="display:none;"
+            >
+
+
+                <input
+                    type="password"
+                    id="claveAdmin"
+                    placeholder="Clave Administrador"
+                >
+
+
+            </div>
+
+
+
+            <button onclick="register()">
+                Registrarse
             </button>
 
-        </a>
-
-        <a href="login.html">
-
-            <button>
-
-                Login
-
-            </button>
-
-        </a>
-
-    </div>
-
-</header>
 
 
-<!-- =========================
-REGISTER
-========================= -->
+            <p>
 
-<section class="login-container">
+                ¿Ya tienes cuenta?
 
-    <h1>
+                <a href="login.html">
+                    Iniciar Sesión
+                </a>
 
-    Crear Cuenta
-
-    </h1>
+            </p>
 
 
-    <input
-    type="text"
-    id="nombre"
-    placeholder="Nombre completo">
+        </div>
 
 
-    <input
-    type="email"
-    id="correo"
-    placeholder="Correo electrónico">
+    </main>
 
 
-    <input
-    type="password"
-    id="password"
-    placeholder="Contraseña">
 
+    <script src="app.js"></script>
 
-    <select id="rol">
-
-        <option value="user">
-
-            Usuario
-
-        </option>
-
-        <option value="admin">
-
-            Administrador
-
-        </option>
-
-    </select>
-
-
-    <!-- CLAVE ADMIN -->
-    <div id="adminBox"
-    style="display:none;">
-
-        <input
-        type="password"
-        id="claveAdmin"
-        placeholder="Clave de administrador">
-
-    </div>
-
-
-    <button onclick="register()">
-
-        Registrarse
-
-    </button>
-
-
-    <p>
-
-        ¿Ya tienes cuenta?
-
-        <a href="login.html">
-
-            Iniciar sesión
-
-        </a>
-
-    </p>
-
-</section>
-
-
-<script src="app.js"></script>
-<script src="register.js"></script>
+    <script src="register.js"></script>
 
 </body>
+
 </html>

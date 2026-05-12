@@ -3,202 +3,199 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<title>Mi Perfil - TECHNOVA GT</title>
+    <title>
+        Perfil
+    </title>
 
-<link rel="stylesheet"
-href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 
 </head>
 
 <body>
 
 
-<!-- =========================
-NAVBAR
-========================= -->
+    <!-- HEADER -->
 
-<header class="navbar">
+    <header class="header">
 
-    <h1>
 
-    Mi Perfil
+        <h1>
+            TECHNOVA GT
+        </h1>
 
-    </h1>
 
-    <div>
+        <nav>
 
-        <a href="index.html">
-
-            <button>
-
+            <a href="index.html">
                 Inicio
+            </a>
 
-            </button>
-
-        </a>
-
-        <a href="tienda.html">
-
-            <button>
-
+            <a href="tienda.html">
                 Tienda
+            </a>
 
-            </button>
-
-        </a>
-
-        <a href="carrito.html">
-
-            <button>
-
+            <a href="carrito.html">
                 Carrito
+            </a>
 
-            </button>
-
-        </a>
-
-        <a href="historial.html">
-
-            <button>
-
+            <a href="historial.html">
                 Historial
+            </a>
 
+            <button onclick="cerrarSesion()">
+                Cerrar Sesión
             </button>
 
-        </a>
+        </nav>
 
-        <button onclick="cerrarSesion()">
 
-            Cerrar Sesión
+    </header>
 
-        </button>
 
-    </div>
 
-</header>
+    <!-- CONTENIDO -->
 
+    <main class="container">
 
-<!-- =========================
-PERFIL
-========================= -->
 
-<section class="perfil">
+        <section class="perfil-container">
 
 
-    <h1>
+            <h2>
+                Mi Perfil
+            </h2>
 
-    Información del Usuario
 
-    </h1>
+            <div class="perfil-card">
 
 
-    <div class="perfil-info">
+                <p>
 
-        <p>
+                    <strong>
+                        Nombre:
+                    </strong>
 
-            <strong>Nombre:</strong>
+                    <span id="nombreUsuario">
 
-            <span id="nombre">
+                    </span>
 
-            </span>
+                </p>
 
-        </p>
 
+                <p>
 
-        <p>
+                    <strong>
+                        Correo:
+                    </strong>
 
-            <strong>Correo:</strong>
+                    <span id="correoUsuario">
 
-            <span id="correo">
+                    </span>
 
-            </span>
+                </p>
 
-        </p>
 
+                <p>
 
-        <p>
+                    <strong>
+                        Rol:
+                    </strong>
 
-            <strong>Rol:</strong>
+                    <span id="rolUsuario">
 
-            <span id="rol">
+                    </span>
 
-            </span>
+                </p>
 
-        </p>
 
-    </div>
+            </div>
 
 
-</section>
+        </section>
 
 
-<!-- =========================
-RESUMEN COMPRAS
-========================= -->
 
-<section class="perfil">
+        <!-- RESUMEN COMPRAS -->
 
-    <h1>
+        <section class="perfil-compras">
 
-    Resumen de Compras
 
-    </h1>
+            <h2>
+                Resumen de Compras
+            </h2>
 
 
-    <p>
+            <div class="resumen-box">
 
-        Compras realizadas:
 
-        <strong id="cantidadCompras">
+                <h3>
 
-        0
+                    Compras realizadas:
 
-        </strong>
+                    <span id="cantidadCompras">
+                        0
+                    </span>
 
-    </p>
+                </h3>
 
 
-    <p>
+                <h3>
 
-        Total gastado:
+                    Total gastado:
 
-        <strong id="totalGastado">
+                    <span id="totalGastado">
+                        Q0
+                    </span>
 
-        Q0.00
+                </h3>
 
-        </strong>
 
-    </p>
+            </div>
 
-</section>
 
+        </section>
 
-<!-- =========================
-ULTIMAS COMPRAS
-========================= -->
 
-<section class="perfil">
 
-    <h1>
+        <!-- HISTORIAL -->
 
-    Últimas Compras
+        <section>
 
-    </h1>
 
-    <div id="ultimasCompras">
+            <h2>
+                Últimas Compras
+            </h2>
 
-    </div>
 
-</section>
+            <div
+                id="historialPerfil"
+                class="productos-grid"
+            >
 
+            </div>
 
-<script src="app.js"></script>
-<script src="perfil.js"></script>
+
+        </section>
+
+
+    </main>
+
+
+
+    <script src="app.js"></script>
+
+    <script src="perfil.js"></script>
 
 </body>
+
 </html>

@@ -3,109 +3,116 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<title>Login - TECHNOVA GT</title>
+    <title>
+        Iniciar Sesión
+    </title>
 
-<link rel="stylesheet"
-href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 
 </head>
 
 <body>
 
 
-<!-- =========================
-NAVBAR
-========================= -->
+    <!-- HEADER -->
 
-<header class="navbar">
+    <header class="header">
 
-    <h1>
 
-    TECHNOVA GT
+        <h1>
+            TECHNOVA GT
+        </h1>
 
-    </h1>
 
-    <div>
+        <nav>
 
-        <a href="index.html">
-
-            <button>
-
+            <a href="index.html">
                 Inicio
+            </a>
 
-            </button>
+            <a href="tienda.html">
+                Tienda
+            </a>
 
-        </a>
-
-        <a href="register.html">
-
-            <button>
-
+            <a href="register.html">
                 Registrarse
+            </a>
 
+        </nav>
+
+
+    </header>
+
+
+
+    <!-- LOGIN -->
+
+    <main class="container">
+
+
+        <div class="form-login">
+
+
+            <h2>
+                Iniciar Sesión
+            </h2>
+
+
+
+            <input
+                type="email"
+                id="correo"
+                placeholder="Correo electrónico"
+            >
+
+
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Contraseña"
+            >
+
+
+
+            <button onclick="login()">
+                Ingresar
             </button>
 
-        </a>
-
-    </div>
-
-</header>
 
 
-<!-- =========================
-LOGIN
-========================= -->
+            <p>
 
-<section class="login-container">
+                ¿No tienes cuenta?
 
-    <h1>
+                <a href="register.html">
+                    Registrarse
+                </a>
 
-    Iniciar Sesión
-
-    </h1>
+            </p>
 
 
-    <input
-    type="email"
-    id="correo"
-    placeholder="Correo electrónico">
+        </div>
 
 
-    <input
-    type="password"
-    id="password"
-    placeholder="Contraseña">
+    </main>
 
 
-    <button onclick="login()">
 
-        Ingresar
+    <script src="app.js"></script>
 
-    </button>
-
-
-    <p>
-
-        ¿No tienes cuenta?
-
-        <a href="register.html">
-
-            Registrarse
-
-        </a>
-
-    </p>
-
-</section>
-
-
-<script src="app.js"></script>
-<script src="login.js"></script>
+    <script src="login.js"></script>
 
 </body>
+
 </html>

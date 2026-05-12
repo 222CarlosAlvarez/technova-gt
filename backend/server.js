@@ -1,11 +1,27 @@
-const express = require("express");
-const sqlite3 = require("sqlite3").verbose();
-const bcrypt = require("bcrypt");
-const cors = require("cors");
+const express =
+require("express");
 
-const app = express();
+const sqlite3 =
+require("sqlite3").verbose();
 
-const PORT = process.env.PORT || 3000;
+const bcrypt =
+require("bcrypt");
+
+const cors =
+require("cors");
+
+
+
+// ======================================
+// APP
+// ======================================
+
+const app =
+express();
+
+const PORT =
+process.env.PORT || 3000;
+
 
 
 // ======================================
@@ -16,9 +32,9 @@ app.use(
 
     cors({
 
-        origin: "*",
+        origin:"*",
 
-        methods: [
+        methods:[
             "GET",
             "POST",
             "PUT",
@@ -26,7 +42,7 @@ app.use(
             "OPTIONS"
         ],
 
-        allowedHeaders: [
+        allowedHeaders:[
             "Content-Type",
             "Authorization"
         ]
@@ -34,6 +50,7 @@ app.use(
     })
 
 );
+
 
 
 // ======================================
@@ -46,18 +63,20 @@ app.use(
 
     express.urlencoded({
 
-        extended: true
+        extended:true
 
     })
 
 );
 
 
+
 // ======================================
 // DATABASE
 // ======================================
 
-const db = new sqlite3.Database(
+const db =
+new sqlite3.Database(
 
     "./database.db",
 
@@ -78,6 +97,7 @@ const db = new sqlite3.Database(
     }
 
 );
+
 
 
 // ======================================
@@ -107,6 +127,7 @@ db.serialize(()=>{
     `);
 
 
+
     // PRODUCTOS
     db.run(`
 
@@ -127,6 +148,7 @@ db.serialize(()=>{
         )
 
     `);
+
 
 
     // COMPRAS
@@ -157,6 +179,7 @@ db.serialize(()=>{
 });
 
 
+
 // ======================================
 // RUTA PRINCIPAL
 // ======================================
@@ -171,6 +194,7 @@ app.get("/",(req,res)=>{
     });
 
 });
+
 
 
 // ======================================
@@ -210,6 +234,7 @@ app.get("/productos",(req,res)=>{
 });
 
 
+
 // ======================================
 // AGREGAR PRODUCTO
 // ======================================
@@ -227,6 +252,7 @@ app.post("/productos",(req,res)=>{
     } = req.body;
 
 
+    // VALIDAR
     if(
         !nombre ||
         !precio ||
@@ -292,6 +318,7 @@ app.post("/productos",(req,res)=>{
     );
 
 });
+
 
 
 // ======================================
@@ -366,6 +393,7 @@ app.put("/productos/:id",(req,res)=>{
 });
 
 
+
 // ======================================
 // ELIMINAR PRODUCTO
 // ======================================
@@ -411,6 +439,7 @@ app.delete("/productos/:id",(req,res)=>{
 });
 
 
+
 // ======================================
 // REGISTER
 // ======================================
@@ -454,7 +483,7 @@ app.post("/register",(req,res)=>{
             return res.status(401).json({
 
                 mensaje:
-                "Clave admin incorrecta"
+                "Clave administrador incorrecta"
 
             });
 
@@ -468,7 +497,6 @@ app.post("/register",(req,res)=>{
     bcrypt.hashSync(password,10);
 
 
-    // INSERTAR USUARIO
     db.run(
 
         `
@@ -509,7 +537,7 @@ app.post("/register",(req,res)=>{
             res.json({
 
                 mensaje:
-                "Usuario registrado correctamente"
+                "Usuario registrado"
 
             });
 
@@ -518,6 +546,7 @@ app.post("/register",(req,res)=>{
     );
 
 });
+
 
 
 // ======================================
@@ -613,8 +642,9 @@ app.post("/login",(req,res)=>{
 });
 
 
+
 // ======================================
-// REALIZAR COMPRA
+// REGISTRAR COMPRA
 // ======================================
 
 app.post("/compras",(req,res)=>{
@@ -631,8 +661,9 @@ app.post("/compras",(req,res)=>{
 
 
     const total =
-    Number(precio) *
-    Number(cantidad);
+
+        Number(precio) *
+        Number(cantidad);
 
 
     db.run(
@@ -708,6 +739,7 @@ app.post("/compras",(req,res)=>{
 });
 
 
+
 // ======================================
 // HISTORIAL COMPRAS
 // ======================================
@@ -748,6 +780,7 @@ app.get("/compras/:usuario_id",(req,res)=>{
     );
 
 });
+
 
 
 // ======================================

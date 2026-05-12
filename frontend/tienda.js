@@ -1,165 +1,58 @@
-const usuario =
-obtenerUsuario();
-
-
-// =========================
-// VALIDAR LOGIN
-// =========================
-
-verificarLogin();
-
-
-// =========================
+// ======================================
 // VARIABLES
-// =========================
+// ======================================
 
-let productosGlobal = [];
-
-let carrito =
-obtenerCarrito();
+let productosGlobal =
+[];
 
 
-// =========================
-// NAVBAR
-// =========================
 
-function cargarNavbar(){
+// ======================================
+// INICIO
+// ======================================
 
-    const nav =
+window.onload = ()=>{
+
+    verificarLogin();
+
+    mostrarLinksAdmin();
+
+    cargarProductos();
+
+};
+
+
+
+// ======================================
+// MOSTRAR LINKS ADMIN
+// ======================================
+
+function mostrarLinksAdmin(){
+
+    const usuario =
+    obtenerUsuario();
+
+
+    const adminLinks =
     document.getElementById(
-        "navButtons"
+        "adminLinks"
     );
 
 
-    // ADMIN
     if(
         usuario &&
         usuario.rol === "admin"
     ){
 
-        nav.innerHTML = `
+        adminLinks.innerHTML = `
 
-        <a href="index.html">
-
-            <button>
-
-                Inicio
-
-            </button>
-
-        </a>
-
-        <a href="admin.html">
-
-            <button>
-
+            <a href="admin.html">
                 Administrador
+            </a>
 
-            </button>
-
-        </a>
-
-        <a href="inventario.html">
-
-            <button>
-
+            <a href="inventario.html">
                 Inventario
-
-            </button>
-
-        </a>
-
-        <a href="perfil.html">
-
-            <button>
-
-                Perfil
-
-            </button>
-
-        </a>
-
-        <a href="historial.html">
-
-            <button>
-
-                Historial
-
-            </button>
-
-        </a>
-
-        <a href="carrito.html">
-
-            <button>
-
-                Carrito (${carrito.length})
-
-            </button>
-
-        </a>
-
-        <button onclick="cerrarSesion()">
-
-            Cerrar Sesión
-
-        </button>
-
-        `;
-
-    }
-
-
-    // USER
-    else{
-
-        nav.innerHTML = `
-
-        <a href="index.html">
-
-            <button>
-
-                Inicio
-
-            </button>
-
-        </a>
-
-        <a href="perfil.html">
-
-            <button>
-
-                Perfil
-
-            </button>
-
-        </a>
-
-        <a href="historial.html">
-
-            <button>
-
-                Historial
-
-            </button>
-
-        </a>
-
-        <a href="carrito.html">
-
-            <button>
-
-                Carrito (${carrito.length})
-
-            </button>
-
-        </a>
-
-        <button onclick="cerrarSesion()">
-
-            Cerrar Sesión
-
-        </button>
+            </a>
 
         `;
 
@@ -168,9 +61,10 @@ function cargarNavbar(){
 }
 
 
-// =========================
+
+// ======================================
 // CARGAR PRODUCTOS
-// =========================
+// ======================================
 
 async function cargarProductos(){
 
@@ -178,50 +72,61 @@ async function cargarProductos(){
 
         const respuesta =
         await fetch(
+
             `${API}/productos`
+
         );
+
 
         const productos =
         await respuesta.json();
 
+
         productosGlobal =
         productos;
 
-        renderProductos(productos);
+
+        mostrarProductos(
+            productos
+        );
 
     }catch(error){
 
         console.log(error);
+
+        alert(
+            "Error cargando productos"
+        );
 
     }
 
 }
 
 
-// =========================
-// RENDER PRODUCTOS
-// =========================
 
-function renderProductos(productos){
+// ======================================
+// MOSTRAR PRODUCTOS
+// ======================================
+
+function mostrarProductos(productos){
 
     const contenedor =
     document.getElementById(
-        "productos"
+        "contenedorProductos"
     );
 
-    contenedor.innerHTML = "";
+
+    contenedor.innerHTML =
+    "";
 
 
-    // VACIO
     if(productos.length === 0){
 
         contenedor.innerHTML = `
 
-        <p>
-
-        No hay productos
-
-        </p>
+            <h3>
+                No hay productos disponibles
+            </h3>
 
         `;
 
@@ -230,62 +135,53 @@ function renderProductos(productos){
     }
 
 
-    productos.forEach(producto=>{
+    productos.forEach((producto)=>{
 
-        const precio =
-        Number(producto.precio);
 
         contenedor.innerHTML += `
 
-        <div class="card">
+            <div class="card-producto">
 
-            <img
-            src="${producto.imagen}"
-            alt="${producto.nombre}">
 
-            <div class="card-content">
+                <img
+                    src="${producto.imagen}"
+                    alt="${producto.nombre}"
+                >
+
 
                 <h3>
-
-                ${producto.nombre}
-
+                    ${producto.nombre}
                 </h3>
 
-                <p>
-
-                Categoría:
-                ${producto.categoria}
-
-                </p>
 
                 <p>
-
-                Precio:
-                ${formatoMoneda(precio)}
-
+                    Categoría:
+                    ${producto.categoria}
                 </p>
+
 
                 <p>
-
-                Disponibles:
-                ${producto.cantidad}
-
+                    Precio:
+                    Q${producto.precio}
                 </p>
+
+
+                <p>
+                    Stock:
+                    ${producto.cantidad}
+                </p>
+
 
                 <button
-                onclick="agregarCarrito(
-                    ${producto.id},
-                    '${producto.nombre}',
-                    ${precio}
-                )">
-
-                    Agregar al carrito
-
+                    onclick='agregarCarrito(
+                        ${JSON.stringify(producto)}
+                    )'
+                >
+                    Agregar al Carrito
                 </button>
 
-            </div>
 
-        </div>
+            </div>
 
         `;
 
@@ -294,73 +190,101 @@ function renderProductos(productos){
 }
 
 
-// =========================
-// BUSCAR PRODUCTOS
-// =========================
 
-function buscarProductos(){
+// ======================================
+// AGREGAR AL CARRITO
+// ======================================
 
-    const texto =
-    document.getElementById(
-        "busqueda"
-    ).value.toLowerCase();
+function agregarCarrito(producto){
 
+    let carrito =
+    JSON.parse(
 
-    const filtrados =
-    productosGlobal.filter(producto=>
+        localStorage.getItem(
+            "carrito"
+        )
 
-        producto.nombre
-        .toLowerCase()
-        .includes(texto)
-
-        ||
-
-        producto.categoria
-        .toLowerCase()
-        .includes(texto)
-
-    );
+    ) || [];
 
 
-    renderProductos(filtrados);
+    // BUSCAR SI EXISTE
+    const existe =
+    carrito.find((item)=>{
 
-}
-
-
-// =========================
-// AGREGAR CARRITO
-// =========================
-
-function agregarCarrito(
-    id,
-    nombre,
-    precio
-){
-
-    carrito.push({
-
-        id,
-        nombre,
-        precio:Number(precio)
+        return item.id === producto.id;
 
     });
 
 
-    guardarCarrito(carrito);
+    if(existe){
 
-    cargarNavbar();
+        existe.cantidad += 1;
+
+    }else{
+
+        carrito.push({
+
+            ...producto,
+
+            cantidad:1
+
+        });
+
+    }
+
+
+    localStorage.setItem(
+
+        "carrito",
+
+        JSON.stringify(carrito)
+
+    );
+
 
     alert(
-        "Producto agregado"
+        "Producto agregado al carrito"
     );
 
 }
 
 
-// =========================
-// INICIAR
-// =========================
 
-cargarNavbar();
+// ======================================
+// FILTRAR PRODUCTOS
+// ======================================
 
-cargarProductos();
+function filtrarProductos(){
+
+    const texto =
+    document.getElementById(
+        "buscador"
+    ).value.toLowerCase();
+
+
+    const filtrados =
+    productosGlobal.filter((producto)=>{
+
+
+        return(
+
+            producto.nombre
+            .toLowerCase()
+            .includes(texto)
+
+            ||
+
+            producto.categoria
+            .toLowerCase()
+            .includes(texto)
+
+        );
+
+    });
+
+
+    mostrarProductos(
+        filtrados
+    );
+
+}

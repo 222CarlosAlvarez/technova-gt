@@ -1,46 +1,40 @@
-// =========================
+// ======================================
 // MOSTRAR CLAVE ADMIN
-// =========================
+// ======================================
 
-const rolSelect =
-document.getElementById(
-    "rol"
-);
+function mostrarClaveAdmin(){
+
+    const rol =
+    document.getElementById(
+        "rol"
+    ).value;
 
 
-rolSelect.addEventListener(
-    "change",
-    ()=>{
+    const div =
+    document.getElementById(
+        "divClaveAdmin"
+    );
 
-        const adminBox =
-        document.getElementById(
-            "adminBox"
-        );
 
-        if(
-            rolSelect.value ===
-            "admin"
-        ){
+    if(rol === "admin"){
 
-            adminBox.style.display =
-            "block";
+        div.style.display =
+        "block";
 
-        }
+    }else{
 
-        else{
-
-            adminBox.style.display =
-            "none";
-
-        }
+        div.style.display =
+        "none";
 
     }
-);
+
+}
 
 
-// =========================
+
+// ======================================
 // REGISTER
-// =========================
+// ======================================
 
 async function register(){
 
@@ -97,7 +91,7 @@ async function register(){
     ){
 
         alert(
-            "Debes ingresar la clave admin"
+            "Ingresa clave administrador"
         );
 
         return;
@@ -144,8 +138,7 @@ async function register(){
         if(!respuesta.ok){
 
             alert(
-                datos.mensaje ||
-                "Error al registrar"
+                datos.mensaje
             );
 
             return;
@@ -154,20 +147,20 @@ async function register(){
 
 
         alert(
-            "Cuenta creada correctamente"
+            "Usuario registrado correctamente"
         );
 
 
-        // REDIRIGIR
         window.location.href =
         "login.html";
+
 
     }catch(error){
 
         console.log(error);
 
         alert(
-            "Error del servidor"
+            "Error conexión servidor"
         );
 
     }

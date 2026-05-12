@@ -3,81 +3,111 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<title>Carrito</title>
+    <title>
+        Carrito
+    </title>
 
-<link rel="stylesheet"
-href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 
 </head>
 
 <body>
 
 
-<!-- NAVBAR -->
-<header class="navbar">
+    <!-- HEADER -->
 
-    <h1>
+    <header class="header">
 
-    Mi Carrito
 
-    </h1>
+        <h1>
+            TECHNOVA GT
+        </h1>
 
-    <div>
 
-        <a href="tienda.html">
+        <nav>
 
-            <button>
+            <a href="index.html">
+                Inicio
+            </a>
 
+            <a href="tienda.html">
                 Tienda
+            </a>
 
+            <a href="perfil.html">
+                Perfil
+            </a>
+
+            <button onclick="cerrarSesion()">
+                Cerrar Sesión
             </button>
 
-        </a>
+        </nav>
 
-        <a href="historial.html">
 
-            <button>
+    </header>
 
-                Historial
 
+
+    <!-- CONTENIDO -->
+
+    <main class="container">
+
+
+        <h2>
+            Mi Carrito
+        </h2>
+
+
+        <div
+            id="contenedorCarrito"
+            class="productos-grid"
+        >
+
+        </div>
+
+
+
+        <div class="total-carrito">
+
+
+            <h3>
+
+                Total:
+
+                <span id="totalCarrito">
+                    Q0
+                </span>
+
+            </h3>
+
+
+            <button onclick="comprarTodo()">
+                Comprar Todo
             </button>
 
-        </a>
 
-        <button onclick="cerrarSesion()">
-
-            Cerrar Sesión
-
-        </button>
-
-    </div>
-
-</header>
+        </div>
 
 
-<!-- CARRITO -->
-<section class="carrito">
-
-    <h2>
-
-    Productos Seleccionados
-
-    </h2>
-
-    <div id="contenedorCarrito">
-
-    </div>
-
-</section>
+    </main>
 
 
-<script src="app.js"></script>
-<script src="carrito.js"></script>
+
+    <script src="app.js"></script>
+
+    <script src="carrito.js"></script>
 
 </body>
+
 </html>

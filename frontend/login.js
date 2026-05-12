@@ -1,6 +1,6 @@
-// =========================
+// ======================================
 // LOGIN
-// =========================
+// ======================================
 
 async function login(){
 
@@ -63,12 +63,11 @@ async function login(){
         await respuesta.json();
 
 
-        // ERROR
+        // ERROR LOGIN
         if(!respuesta.ok){
 
             alert(
-                datos.mensaje ||
-                "Error al iniciar sesión"
+                datos.mensaje
             );
 
             return;
@@ -77,20 +76,13 @@ async function login(){
 
 
         // GUARDAR USUARIO
-        localStorage.setItem(
-
-            "usuario",
-
-            JSON.stringify(
-                datos.usuario
-            )
-
+        guardarUsuario(
+            datos.usuario
         );
 
 
         alert(
-            "Bienvenido " +
-            datos.usuario.nombre
+            "Login correcto"
         );
 
 
@@ -103,13 +95,10 @@ async function login(){
             window.location.href =
             "admin.html";
 
-        }
-
-        // USER
-        else{
+        }else{
 
             window.location.href =
-            "tienda.html";
+            "index.html";
 
         }
 
@@ -118,7 +107,7 @@ async function login(){
         console.log(error);
 
         alert(
-            "Error del servidor"
+            "Error conexión servidor"
         );
 
     }

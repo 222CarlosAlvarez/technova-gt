@@ -1,45 +1,59 @@
-const usuario =
-obtenerUsuario();
+// ======================================
+// INICIO
+// ======================================
+
+window.onload = ()=>{
+
+    verificarLogin();
+
+    cargarPerfil();
+
+    cargarCompras();
+
+};
 
 
-// =========================
-// VALIDAR LOGIN
-// =========================
 
-verificarLogin();
-
-
-// =========================
-// MOSTRAR DATOS
-// =========================
+// ======================================
+// CARGAR PERFIL
+// ======================================
 
 function cargarPerfil(){
 
+    const usuario =
+    obtenerUsuario();
+
+
     document.getElementById(
-        "nombre"
+        "nombreUsuario"
     ).innerText =
     usuario.nombre;
 
 
     document.getElementById(
-        "correo"
+        "correoUsuario"
     ).innerText =
     usuario.correo;
 
 
     document.getElementById(
-        "rol"
+        "rolUsuario"
     ).innerText =
     usuario.rol;
 
 }
 
 
-// =========================
+
+// ======================================
 // CARGAR COMPRAS
-// =========================
+// ======================================
 
 async function cargarCompras(){
+
+    const usuario =
+    obtenerUsuario();
+
 
     try{
 
@@ -50,58 +64,29 @@ async function cargarCompras(){
 
         );
 
+
         const compras =
         await respuesta.json();
 
 
-        // =========================
-        // RESUMEN
-        // =========================
-
+        const historial =
         document.getElementById(
-            "cantidadCompras"
-        ).innerText =
-        compras.length;
-
-
-        let total = 0;
-
-        compras.forEach(compra=>{
-
-            total += Number(
-                compra.total
-            );
-
-        });
-
-
-        document.getElementById(
-            "totalGastado"
-        ).innerText =
-        formatoMoneda(total);
-
-
-        // =========================
-        // ULTIMAS COMPRAS
-        // =========================
-
-        const contenedor =
-        document.getElementById(
-            "ultimasCompras"
+            "historialPerfil"
         );
 
-        contenedor.innerHTML = "";
+
+        historial.innerHTML =
+        "";
 
 
+        // SI NO HAY COMPRAS
         if(compras.length === 0){
 
-            contenedor.innerHTML = `
+            historial.innerHTML = `
 
-            <p>
-
-            No hay compras realizadas
-
-            </p>
+                <h3>
+                    No hay compras registradas
+                </h3>
 
             `;
 
@@ -110,81 +95,78 @@ async function cargarCompras(){
         }
 
 
-        compras.slice(0,5)
-        .forEach(compra=>{
+        let totalGastado = 0;
 
-            const productos =
-            JSON.parse(
-                compra.productos
-            );
 
-            contenedor.innerHTML += `
+        compras.forEach((compra)=>{
 
-            <div class="card">
 
-                <div class="card-content">
+            totalGastado +=
+            Number(compra.total);
+
+
+            historial.innerHTML += `
+
+                <div class="card-producto">
+
 
                     <h3>
-
-                    Compra #${compra.id}
-
+                        ${compra.nombre_producto}
                     </h3>
 
-                    <p>
-
-                    Fecha:
-                    ${compra.fecha}
-
-                    </p>
 
                     <p>
-
-                    Total:
-                    ${formatoMoneda(
-                        compra.total
-                    )}
-
+                        Cantidad:
+                        ${compra.cantidad}
                     </p>
 
-                    <h4>
 
-                    Productos:
+                    <p>
+                        Precio:
+                        Q${compra.precio}
+                    </p>
 
-                    </h4>
 
-                    ${productos.map(producto=>
+                    <p>
+                        Total:
+                        Q${compra.total}
+                    </p>
 
-                        `
-                        <p>
 
-                        • ${producto.nombre}
+                    <p>
+                        Fecha:
+                        ${compra.fecha}
+                    </p>
 
-                        </p>
-                        `
-
-                    ).join("")}
 
                 </div>
-
-            </div>
 
             `;
 
         });
 
+
+        // RESUMEN
+        document.getElementById(
+            "cantidadCompras"
+        ).innerText =
+        compras.length;
+
+
+        document.getElementById(
+            "totalGastado"
+        ).innerText =
+        `Q${totalGastado}`;
+
+
     }catch(error){
 
         console.log(error);
 
+        alert(
+            "Error cargando perfil"
+        );
+
     }
 
 }
-
-
-// =========================
-// INICIAR
-// =========================
-
-cargarPerfil();
-
-cargarCompras();

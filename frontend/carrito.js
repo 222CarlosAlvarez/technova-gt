@@ -1,25 +1,33 @@
-const usuario =
-obtenerUsuario();
-
-
-// =========================
-// VERIFICAR LOGIN
-// =========================
-
-verificarLogin();
-
-
-// =========================
-// CARRITO
-// =========================
+// ======================================
+// VARIABLES
+// ======================================
 
 let carrito =
-obtenerCarrito();
+JSON.parse(
+
+    localStorage.getItem("carrito")
+
+) || [];
 
 
-// =========================
+
+// ======================================
+// INICIO
+// ======================================
+
+window.onload = ()=>{
+
+    verificarLogin();
+
+    mostrarCarrito();
+
+};
+
+
+
+// ======================================
 // MOSTRAR CARRITO
-// =========================
+// ======================================
 
 function mostrarCarrito(){
 
@@ -28,136 +36,140 @@ function mostrarCarrito(){
         "contenedorCarrito"
     );
 
-    contenedor.innerHTML = "";
+
+    const totalHTML =
+    document.getElementById(
+        "totalCarrito"
+    );
+
+
+    contenedor.innerHTML =
+    "";
+
 
     let total = 0;
 
 
-    // VACIO
     if(carrito.length === 0){
 
         contenedor.innerHTML = `
 
-        <p>
-
-        No hay productos en el carrito
-
-        </p>
+            <h3>
+                Tu carrito está vacío
+            </h3>
 
         `;
+
+
+        totalHTML.innerText =
+        "Q0";
 
         return;
 
     }
 
 
-    // RECORRER
     carrito.forEach((producto,index)=>{
 
-        const precio =
-        Number(producto.precio);
 
-        total += precio;
+        const subtotal =
+
+            Number(producto.precio) *
+            Number(producto.cantidad);
+
+
+        total += subtotal;
+
 
         contenedor.innerHTML += `
 
-        <div class="carrito-item">
+            <div class="card-producto">
 
-            <div>
+
+                <img
+                    src="${producto.imagen}"
+                    alt="${producto.nombre}"
+                >
+
 
                 <h3>
-
-                ${producto.nombre}
-
+                    ${producto.nombre}
                 </h3>
 
+
                 <p>
-
-                Precio:
-                ${formatoMoneda(precio)}
-
+                    Precio:
+                    Q${producto.precio}
                 </p>
 
+
+                <p>
+                    Cantidad:
+                    ${producto.cantidad}
+                </p>
+
+
+                <p>
+                    Subtotal:
+                    Q${subtotal}
+                </p>
+
+
+                <button
+                    class="btn-eliminar"
+                    onclick="eliminarDelCarrito(${index})"
+                >
+                    Eliminar
+                </button>
+
+
             </div>
-
-            <button
-            onclick="eliminarProducto(${index})">
-
-                Eliminar
-
-            </button>
-
-        </div>
 
         `;
 
     });
 
 
-    // TOTAL
-    contenedor.innerHTML += `
-
-    <hr>
-
-    <h2>
-
-    Total:
-    ${formatoMoneda(total)}
-
-    </h2>
-
-    <button onclick="comprar()">
-
-        Finalizar Compra
-
-    </button>
-
-    <button onclick="vaciarCarrito()">
-
-        Vaciar Carrito
-
-    </button>
-
-    `;
+    totalHTML.innerText =
+    `Q${total}`;
 
 }
 
 
-// =========================
-// ELIMINAR PRODUCTO
-// =========================
 
-function eliminarProducto(index){
+// ======================================
+// ELIMINAR PRODUCTO
+// ======================================
+
+function eliminarDelCarrito(index){
 
     carrito.splice(index,1);
 
-    guardarCarrito(carrito);
+
+    localStorage.setItem(
+
+        "carrito",
+
+        JSON.stringify(carrito)
+
+    );
+
 
     mostrarCarrito();
 
 }
 
 
-// =========================
-// VACIAR
-// =========================
 
-function vaciarCarrito(){
+// ======================================
+// COMPRAR TODO
+// ======================================
 
-    carrito = [];
+async function comprarTodo(){
 
-    guardarCarrito(carrito);
+    const usuario =
+    obtenerUsuario();
 
-    mostrarCarrito();
-
-}
-
-
-// =========================
-// COMPRAR
-// =========================
-
-async function comprar(){
 
     if(carrito.length === 0){
 
@@ -169,73 +181,77 @@ async function comprar(){
 
     }
 
-    let total = 0;
-
-    carrito.forEach(producto=>{
-
-        total += Number(
-            producto.precio
-        );
-
-    });
-
 
     try{
 
-        const respuesta =
-        await fetch(
 
-            `${API}/comprar`,
+        for(const producto of carrito){
 
-            {
 
-                method:"POST",
+            await fetch(
 
-                headers:{
-                    "Content-Type":
-                    "application/json"
-                },
+                `${API}/compras`,
 
-                body:JSON.stringify({
+                {
 
-                    usuario_id:
-                    usuario.id,
+                    method:"POST",
 
-                    carrito,
+                    headers:{
+                        "Content-Type":
+                        "application/json"
+                    },
 
-                    total
+                    body:JSON.stringify({
 
-                })
+                        usuario_id:
+                        usuario.id,
 
-            }
+                        producto_id:
+                        producto.id,
 
-        );
+                        nombre_producto:
+                        producto.nombre,
 
-        const datos =
-        await respuesta.json();
+                        precio:
+                        producto.precio,
+
+                        cantidad:
+                        producto.cantidad
+
+                    })
+
+                }
+
+            );
+
+        }
+
 
         alert(
-            datos.mensaje
+            "Compra realizada correctamente"
         );
 
-        // LIMPIAR
+
+        // LIMPIAR CARRITO
         carrito = [];
 
-        guardarCarrito(carrito);
+
+        localStorage.removeItem(
+            "carrito"
+        );
+
 
         mostrarCarrito();
+
 
     }catch(error){
 
         console.log(error);
 
+        alert(
+            "Error realizando compra"
+        );
+
     }
 
 }
-
-
-// =========================
-// INICIAR
-// =========================
-
-mostrarCarrito();

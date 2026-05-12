@@ -3,423 +3,321 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<title>TECHNOVA GT</title>
+    <title>
+        TECHNOVA GT
+    </title>
 
-<link rel="stylesheet"
-href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 
 </head>
 
 <body>
 
 
-<!-- =========================
-NAVBAR
-========================= -->
+    <!-- HEADER -->
 
-<header class="navbar">
-
-    <h1>
-
-    TECHNOVA GT
-
-    </h1>
-
-    <div id="navButtons">
-
-    </div>
-
-</header>
+    <header class="header">
 
 
-<!-- =========================
-HERO
-========================= -->
+        <h1>
+            TECHNOVA GT
+        </h1>
 
-<section class="hero">
 
-    <div class="hero-content">
+        <nav id="navPrincipal">
+
+
+            <a href="index.html">
+                Inicio
+            </a>
+
+
+            <a href="tienda.html">
+                Tienda
+            </a>
+
+
+            <a href="carrito.html">
+                Carrito
+            </a>
+
+
+            <a href="historial.html">
+                Historial
+            </a>
+
+
+            <a href="perfil.html">
+                Perfil
+            </a>
+
+
+            <span id="adminLinks">
+
+            </span>
+
+
+            <span id="authLinks">
+
+
+                <a href="login.html">
+                    Iniciar Sesión
+                </a>
+
+
+                <a href="register.html">
+                    Registrarse
+                </a>
+
+
+            </span>
+
+
+        </nav>
+
+
+    </header>
+
+
+
+    <!-- HERO -->
+
+    <section class="hero">
+
 
         <h2>
-
-        Tecnología de Última Generación
-
+            Bienvenido a TECHNOVA GT
         </h2>
 
+
         <p>
-
-        Compra laptops, celulares,
-        accesorios gamer, audífonos,
-        monitores y mucho más.
-
+            Tecnología, componentes y accesorios
+            al mejor precio.
         </p>
 
-        <a href="tienda.html">
 
-            <button>
-
-                Ir a la Tienda
-
-            </button>
-
+        <a
+            href="tienda.html"
+            class="btn-principal"
+        >
+            Ir a la Tienda
         </a>
 
-    </div>
 
-</section>
-
-
-<!-- =========================
-CATEGORIAS
-========================= -->
-
-<section class="categorias">
-
-    <h2>
-
-    Categorías
-
-    </h2>
-
-    <div class="categorias-grid">
+    </section>
 
 
-        <div class="categoria-card">
 
-            <h3>
+    <!-- PRODUCTOS DESTACADOS -->
 
-            Laptops
+    <main class="container">
 
-            </h3>
+
+        <h2>
+            Productos Destacados
+        </h2>
+
+
+        <div
+            id="productosDestacados"
+            class="productos-grid"
+        >
 
         </div>
 
 
-        <div class="categoria-card">
+    </main>
 
-            <h3>
 
-            Celulares
 
-            </h3>
+    <!-- FOOTER -->
 
-        </div>
+    <footer class="footer">
 
 
-        <div class="categoria-card">
+        <p>
+            © 2026 TECHNOVA GT
+        </p>
 
-            <h3>
 
-            Audífonos
+    </footer>
 
-            </h3>
 
-        </div>
 
+    <script src="app.js"></script>
 
-        <div class="categoria-card">
 
-            <h3>
+    <script>
 
-            Monitores
 
-            </h3>
+        // ======================================
+        // CARGAR PRODUCTOS
+        // ======================================
 
-        </div>
+        async function cargarProductos(){
 
 
-        <div class="categoria-card">
+            try{
 
-            <h3>
+                const respuesta =
+                await fetch(
 
-            Accesorios Gamer
+                    `${API}/productos`
 
-            </h3>
+                );
 
-        </div>
 
+                const productos =
+                await respuesta.json();
 
-        <div class="categoria-card">
 
-            <h3>
+                const contenedor =
+                document.getElementById(
+                    "productosDestacados"
+                );
 
-            Smartwatch
 
-            </h3>
+                contenedor.innerHTML =
+                "";
 
-        </div>
 
+                productos.slice(0,6).forEach((producto)=>{
 
-    </div>
 
-</section>
+                    contenedor.innerHTML += `
 
+                        <div class="card-producto">
 
-<!-- =========================
-PRODUCTOS DESTACADOS
-========================= -->
 
-<section>
+                            <img
+                                src="${producto.imagen}"
+                                alt="${producto.nombre}"
+                            >
 
-    <h2 class="titulo-section">
 
-    Productos Destacados
+                            <h3>
+                                ${producto.nombre}
+                            </h3>
 
-    </h2>
 
-    <div
-    id="productos"
-    class="productos">
+                            <p>
+                                Categoría:
+                                ${producto.categoria}
+                            </p>
 
-    </div>
 
-</section>
+                            <p>
+                                Precio:
+                                Q${producto.precio}
+                            </p>
 
 
-<!-- =========================
-FOOTER
-========================= -->
+                            <a
+                                href="tienda.html"
+                            >
+                                <button>
+                                    Ver Producto
+                                </button>
+                            </a>
 
-<footer class="footer">
 
-    <h3>
+                        </div>
 
-    TECHNOVA GT
+                    `;
 
-    </h3>
+                });
 
-    <p>
+            }catch(error){
 
-    Guatemala © 2026
+                console.log(error);
 
-    </p>
+            }
 
-</footer>
+        }
 
 
-<script src="app.js"></script>
 
-<script>
+        // ======================================
+        // MOSTRAR LINKS SEGÚN LOGIN
+        // ======================================
 
-const usuario =
-obtenerUsuario();
+        function mostrarSesion(){
 
 
-// =========================
-// NAVBAR
-// =========================
+            const usuario =
+            obtenerUsuario();
 
-function cargarNavbar(){
 
-    const nav =
-    document.getElementById(
-        "navButtons"
-    );
+            const authLinks =
+            document.getElementById(
+                "authLinks"
+            );
 
-    // LOGIN
-    if(!usuario){
 
-        nav.innerHTML = `
+            const adminLinks =
+            document.getElementById(
+                "adminLinks"
+            );
 
-        <a href="login.html">
 
-            <button>
+            if(usuario){
 
-                Login
 
-            </button>
+                authLinks.innerHTML = `
 
-        </a>
+                    <button onclick="cerrarSesion()">
+                        Cerrar Sesión
+                    </button>
 
-        <a href="register.html">
+                `;
 
-            <button>
 
-                Registrarse
+                // ADMIN
+                if(usuario.rol === "admin"){
 
-            </button>
 
-        </a>
+                    adminLinks.innerHTML = `
 
-        `;
+                        <a href="admin.html">
+                            Administrador
+                        </a>
 
-        return;
 
-    }
+                        <a href="inventario.html">
+                            Inventario
+                        </a>
 
+                    `;
 
-    // ADMIN
-    if(usuario.rol === "admin"){
+                }
 
-        nav.innerHTML = `
+            }
 
-        <a href="admin.html">
+        }
 
-            <button>
 
-                Administrador
 
-            </button>
+        // ======================================
+        // INICIO
+        // ======================================
 
-        </a>
+        cargarProductos();
 
-        <a href="inventario.html">
+        mostrarSesion();
 
-            <button>
 
-                Inventario
-
-            </button>
-
-        </a>
-
-        <a href="tienda.html">
-
-            <button>
-
-                Tienda
-
-            </button>
-
-        </a>
-
-        <button onclick="cerrarSesion()">
-
-            Cerrar Sesión
-
-        </button>
-
-        `;
-
-    }
-
-
-    // USER
-    else{
-
-        nav.innerHTML = `
-
-        <a href="tienda.html">
-
-            <button>
-
-                Tienda
-
-            </button>
-
-        </a>
-
-        <a href="carrito.html">
-
-            <button>
-
-                Carrito
-
-            </button>
-
-        </a>
-
-        <button onclick="cerrarSesion()">
-
-            Cerrar Sesión
-
-        </button>
-
-        `;
-
-    }
-
-}
-
-
-// =========================
-// PRODUCTOS DESTACADOS
-// =========================
-
-async function cargarProductos(){
-
-    try{
-
-        const respuesta =
-        await fetch(
-            `${API}/productos`
-        );
-
-        const productos =
-        await respuesta.json();
-
-        const contenedor =
-        document.getElementById(
-            "productos"
-        );
-
-        contenedor.innerHTML = "";
-
-
-        // MOSTRAR SOLO 6
-        productos.slice(0,6)
-        .forEach(producto=>{
-
-            contenedor.innerHTML += `
-
-            <div class="card">
-
-                <img
-                src="${producto.imagen}">
-
-                <div class="card-content">
-
-                    <h3>
-
-                    ${producto.nombre}
-
-                    </h3>
-
-                    <p>
-
-                    ${producto.categoria}
-
-                    </p>
-
-                    <p>
-
-                    ${formatoMoneda(
-                        producto.precio
-                    )}
-
-                    </p>
-
-                </div>
-
-            </div>
-
-            `;
-
-        });
-
-    }catch(error){
-
-        console.log(error);
-
-    }
-
-}
-
-
-// =========================
-// INICIAR
-// =========================
-
-cargarNavbar();
-
-cargarProductos();
-
-</script>
+    </script>
 
 </body>
+
 </html>

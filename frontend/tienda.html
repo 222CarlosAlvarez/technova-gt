@@ -3,84 +3,126 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<title>Tienda - TECHNOVA GT</title>
+    <title>
+        Tienda
+    </title>
 
-<link rel="stylesheet"
-href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 
 </head>
 
 <body>
 
 
-<!-- =========================
-NAVBAR
-========================= -->
+    <!-- HEADER -->
 
-<header class="navbar">
-
-    <h1>
-
-    TECHNOVA GT
-
-    </h1>
-
-    <div id="navButtons">
-
-    </div>
-
-</header>
+    <header class="header">
 
 
-<!-- =========================
-BUSCADOR
-========================= -->
-
-<section class="buscador">
-
-    <input
-    type="text"
-    id="busqueda"
-    placeholder="Buscar productos...">
-
-    <button onclick="buscarProductos()">
-
-        Buscar
-
-    </button>
-
-</section>
+        <h1>
+            TECHNOVA GT
+        </h1>
 
 
-<!-- =========================
-PRODUCTOS
-========================= -->
+        <nav id="navTienda">
 
-<section>
 
-    <h2 class="titulo-section">
+            <a href="index.html">
+                Inicio
+            </a>
 
-    Productos Disponibles
 
-    </h2>
+            <a href="carrito.html">
+                Carrito
+            </a>
 
-    <div
-    id="productos"
-    class="productos">
 
-    </div>
+            <a href="perfil.html">
+                Perfil
+            </a>
 
-</section>
 
+            <a href="historial.html">
+                Historial
+            </a>
+
+
+            <span id="adminLinks">
+
+            </span>
+
+
+            <button onclick="cerrarSesion()">
+                Cerrar Sesión
+            </button>
+
+
+        </nav>
+
+
+    </header>
+
+
+
+    <!-- BUSCADOR -->
+
+    <section class="container">
+
+
+        <div class="buscador-container">
+
+
+            <input
+                type="text"
+                id="buscador"
+                placeholder="Buscar productos..."
+                onkeyup="filtrarProductos()"
+            >
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- PRODUCTOS -->
+
+    <main class="container">
+
+
+        <h2>
+            Productos Disponibles
+        </h2>
+
+
+        <div
+            id="contenedorProductos"
+            class="productos-grid"
+        >
+
+        </div>
+
+
+    </main>
+
+
+
+    <script src="app.js"></script>
+
+    <script src="tienda.js"></script>
 
 </body>
-
-<script src="app.js"></script>
-<script src="tienda.js"></script>
 
 </html>

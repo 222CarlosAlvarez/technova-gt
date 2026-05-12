@@ -1,26 +1,29 @@
-const usuario =
-obtenerUsuario();
-
-
-// =========================
-// VALIDAR ADMIN
-// =========================
-
-verificarAdmin();
-
-
-// =========================
+// ======================================
 // VARIABLES
-// =========================
+// ======================================
 
-let productosGlobal = [];
+let productosGlobal =
+[];
 
-let editandoId = null;
 
 
-// =========================
+// ======================================
+// INICIO
+// ======================================
+
+window.onload = ()=>{
+
+    verificarAdmin();
+
+    cargarInventario();
+
+};
+
+
+
+// ======================================
 // CARGAR INVENTARIO
-// =========================
+// ======================================
 
 async function cargarInventario(){
 
@@ -28,141 +31,107 @@ async function cargarInventario(){
 
         const respuesta =
         await fetch(
+
             `${API}/productos`
+
         );
+
 
         const productos =
         await respuesta.json();
 
+
         productosGlobal =
         productos;
 
-        renderProductos(productos);
 
-        actualizarResumen(productos);
+        mostrarProductos(
+            productos
+        );
+
+
+        actualizarResumen(
+            productos
+        );
 
     }catch(error){
 
         console.log(error);
+
+        alert(
+            "Error cargando inventario"
+        );
 
     }
 
 }
 
 
-// =========================
-// RENDER PRODUCTOS
-// =========================
 
-function renderProductos(productos){
+// ======================================
+// MOSTRAR PRODUCTOS
+// ======================================
 
-    const contenedor =
+function mostrarProductos(productos){
+
+    const tabla =
     document.getElementById(
-        "inventario"
+        "tablaProductos"
     );
 
-    contenedor.innerHTML = "";
+
+    tabla.innerHTML =
+    "";
 
 
-    // SIN PRODUCTOS
-    if(productos.length === 0){
-
-        contenedor.innerHTML = `
-
-        <p>
-
-        No hay productos
-
-        </p>
-
-        `;
-
-        return;
-
-    }
+    productos.forEach((producto)=>{
 
 
-    // RECORRER PRODUCTOS
-    productos.forEach(producto=>{
+        tabla.innerHTML += `
 
-        const agotado =
-        producto.cantidad <= 0;
+            <tr>
 
-        contenedor.innerHTML += `
 
-        <div class="card">
+                <td>
+                    ${producto.id}
+                </td>
 
-            <img
-            src="${producto.imagen}"
-            alt="${producto.nombre}">
 
-            <div class="card-content">
+                <td>
+                    ${producto.nombre}
+                </td>
 
-                <h3>
 
-                ${producto.nombre}
+                <td>
+                    ${producto.categoria}
+                </td>
 
-                </h3>
 
-                <p>
+                <td>
+                    Q${producto.precio}
+                </td>
 
-                Categoría:
-                ${producto.categoria}
 
-                </p>
+                <td>
 
-                <p>
+                    ${
+                        producto.cantidad <= 0
 
-                Precio:
-                ${formatoMoneda(
-                    producto.precio
-                )}
+                        ?
 
-                </p>
+                        `<span class="sin-stock">
+                            Sin Stock
+                        </span>`
 
-                <p>
+                        :
 
-                Stock:
-                ${producto.cantidad}
+                        producto.cantidad
+                    }
 
-                </p>
+                </td>
 
-                <p style="
-                color:
-                ${agotado ? 'red':'green'};
-                font-weight:bold;
-                ">
 
-                ${agotado
-                ? 'AGOTADO'
-                : 'DISPONIBLE'}
-
-                </p>
-
-                <button
-                onclick="editarProducto(
-                    ${producto.id},
-                    '${producto.nombre}',
-                    ${producto.precio},
-                    ${producto.cantidad},
-                    '${producto.categoria}',
-                    '${producto.imagen}'
-                )">
-
-                    Editar
-
-                </button>
-
-                <button
-                onclick="eliminarProducto(${producto.id})">
-
-                    Eliminar
-
-                </button>
-
-            </div>
-
-        </div>
+            </tr>
 
         `;
 
@@ -171,9 +140,46 @@ function renderProductos(productos){
 }
 
 
-// =========================
+
+// ======================================
+// FILTRAR CATEGORIA
+// ======================================
+
+function filtrarCategoria(){
+
+    const texto =
+    document.getElementById(
+        "buscarCategoria"
+    ).value.toLowerCase();
+
+
+    const filtrados =
+    productosGlobal.filter((producto)=>{
+
+
+        return producto.categoria
+        .toLowerCase()
+        .includes(texto);
+
+    });
+
+
+    mostrarProductos(
+        filtrados
+    );
+
+
+    actualizarResumen(
+        filtrados
+    );
+
+}
+
+
+
+// ======================================
 // ACTUALIZAR RESUMEN
-// =========================
+// ======================================
 
 function actualizarResumen(productos){
 
@@ -183,401 +189,17 @@ function actualizarResumen(productos){
     productos.length;
 
 
-    let totalStock = 0;
+    const sinStock =
+    productos.filter((p)=>{
 
-    productos.forEach(producto=>{
-
-        totalStock += Number(
-            producto.cantidad
-        );
+        return p.cantidad <= 0;
 
     });
 
 
     document.getElementById(
-        "totalStock"
+        "sinStock"
     ).innerText =
-    totalStock;
+    sinStock.length;
 
 }
-
-
-// =========================
-// BUSCAR CATEGORIA
-// =========================
-
-function buscarCategoria(){
-
-    const texto =
-    document.getElementById(
-        "buscarCategoria"
-    ).value.toLowerCase();
-
-
-    const filtrados =
-    productosGlobal.filter(producto=>
-
-        producto.categoria
-        .toLowerCase()
-        .includes(texto)
-
-    );
-
-
-    renderProductos(filtrados);
-
-}
-
-
-// =========================
-// AGREGAR PRODUCTO
-// =========================
-
-async function agregarProducto(){
-
-    const nombre =
-    document.getElementById(
-        "nombre"
-    ).value;
-
-
-    const precio =
-    document.getElementById(
-        "precio"
-    ).value;
-
-
-    const cantidad =
-    document.getElementById(
-        "cantidad"
-    ).value;
-
-
-    const categoria =
-    document.getElementById(
-        "categoria"
-    ).value;
-
-
-    const imagen =
-    document.getElementById(
-        "imagen"
-    ).value;
-
-
-    // VALIDAR
-    if(
-        !nombre ||
-        !precio ||
-        !cantidad ||
-        !categoria
-    ){
-
-        alert(
-            "Completa todos los campos"
-        );
-
-        return;
-
-    }
-
-
-    try{
-
-        const respuesta =
-        await fetch(
-
-            `${API}/productos`,
-
-            {
-
-                method:"POST",
-
-                headers:{
-                    "Content-Type":
-                    "application/json"
-                },
-
-                body:JSON.stringify({
-
-                    nombre,
-                    precio,
-                    cantidad,
-                    categoria,
-                    imagen
-
-                })
-
-            }
-
-        );
-
-        const datos =
-        await respuesta.json();
-
-        alert(
-            datos.mensaje
-        );
-
-
-        limpiarFormulario();
-
-        cargarInventario();
-
-    }catch(error){
-
-        console.log(error);
-
-    }
-
-}
-
-
-// =========================
-// EDITAR PRODUCTO
-// =========================
-
-function editarProducto(
-    id,
-    nombre,
-    precio,
-    cantidad,
-    categoria,
-    imagen
-){
-
-    editandoId = id;
-
-
-    document.getElementById(
-        "nombre"
-    ).value = nombre;
-
-
-    document.getElementById(
-        "precio"
-    ).value = precio;
-
-
-    document.getElementById(
-        "cantidad"
-    ).value = cantidad;
-
-
-    document.getElementById(
-        "categoria"
-    ).value = categoria;
-
-
-    document.getElementById(
-        "imagen"
-    ).value = imagen;
-
-
-    // CAMBIAR BOTON
-    const boton =
-    document.querySelector(
-        ".formulario button"
-    );
-
-    boton.innerText =
-    "Guardar Cambios";
-
-    boton.onclick =
-    actualizarProducto;
-
-}
-
-
-// =========================
-// ACTUALIZAR PRODUCTO
-// =========================
-
-async function actualizarProducto(){
-
-    const nombre =
-    document.getElementById(
-        "nombre"
-    ).value;
-
-
-    const precio =
-    document.getElementById(
-        "precio"
-    ).value;
-
-
-    const cantidad =
-    document.getElementById(
-        "cantidad"
-    ).value;
-
-
-    const categoria =
-    document.getElementById(
-        "categoria"
-    ).value;
-
-
-    const imagen =
-    document.getElementById(
-        "imagen"
-    ).value;
-
-
-    try{
-
-        const respuesta =
-        await fetch(
-
-            `${API}/productos/${editandoId}`,
-
-            {
-
-                method:"PUT",
-
-                headers:{
-                    "Content-Type":
-                    "application/json"
-                },
-
-                body:JSON.stringify({
-
-                    nombre,
-                    precio,
-                    cantidad,
-                    categoria,
-                    imagen
-
-                })
-
-            }
-
-        );
-
-        const datos =
-        await respuesta.json();
-
-        alert(
-            datos.mensaje
-        );
-
-
-        limpiarFormulario();
-
-
-        // RESTAURAR BOTON
-        const boton =
-        document.querySelector(
-            ".formulario button"
-        );
-
-        boton.innerText =
-        "Agregar Producto";
-
-        boton.onclick =
-        agregarProducto;
-
-
-        editandoId = null;
-
-        cargarInventario();
-
-    }catch(error){
-
-        console.log(error);
-
-    }
-
-}
-
-
-// =========================
-// ELIMINAR PRODUCTO
-// =========================
-
-async function eliminarProducto(id){
-
-    const confirmar =
-    confirm(
-        "¿Eliminar producto?"
-    );
-
-    if(!confirmar){
-
-        return;
-
-    }
-
-
-    try{
-
-        const respuesta =
-        await fetch(
-
-            `${API}/productos/${id}`,
-
-            {
-
-                method:"DELETE"
-
-            }
-
-        );
-
-        const datos =
-        await respuesta.json();
-
-        alert(
-            datos.mensaje
-        );
-
-        cargarInventario();
-
-    }catch(error){
-
-        console.log(error);
-
-    }
-
-}
-
-
-// =========================
-// LIMPIAR FORMULARIO
-// =========================
-
-function limpiarFormulario(){
-
-    document.getElementById(
-        "nombre"
-    ).value = "";
-
-
-    document.getElementById(
-        "precio"
-    ).value = "";
-
-
-    document.getElementById(
-        "cantidad"
-    ).value = "";
-
-
-    document.getElementById(
-        "categoria"
-    ).value = "";
-
-
-    document.getElementById(
-        "imagen"
-    ).value = "";
-
-}
-
-
-// =========================
-// INICIAR
-// =========================
-
-cargarInventario();
