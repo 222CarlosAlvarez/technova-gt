@@ -184,10 +184,17 @@ async function comprarTodo(){
 
     try{
 
+        let subtotalGeneral = 0;
+
+        let ivaGeneral = 0;
+
+        let totalGeneral = 0;
+
 
         for(const producto of carrito){
 
 
+            const respuesta =
             await fetch(
 
                 `${API}/compras`,
@@ -224,12 +231,46 @@ async function comprarTodo(){
 
             );
 
+
+            const datos =
+            await respuesta.json();
+
+
+            // ERROR
+            if(!respuesta.ok){
+
+                alert(
+                    datos.mensaje
+                );
+
+                return;
+
+            }
+
+
+            subtotalGeneral +=
+            datos.subtotal;
+
+            ivaGeneral +=
+            datos.iva;
+
+            totalGeneral +=
+            datos.total;
+
         }
 
 
-        alert(
-            "Compra realizada correctamente"
-        );
+        alert(`
+
+Compra realizada correctamente
+
+Subtotal: Q${subtotalGeneral.toFixed(2)}
+
+IVA 12%: Q${ivaGeneral.toFixed(2)}
+
+Total: Q${totalGeneral.toFixed(2)}
+
+        `);
 
 
         // LIMPIAR CARRITO

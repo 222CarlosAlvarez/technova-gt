@@ -88,9 +88,19 @@ async function cargarHistorial(){
 
 
                     <p>
-                        Total:
-                        Q${compra.total}
-                    </p>
+    Subtotal:
+    Q${compra.subtotal}
+</p>
+
+<p>
+    IVA:
+    Q${compra.iva}
+</p>
+
+<p>
+    Total:
+    Q${compra.total}
+</p>
 
 
                     <p>

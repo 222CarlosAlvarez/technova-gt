@@ -3,7 +3,7 @@
 // ======================================
 
 let productosGlobal =
-[];
+    [];
 
 
 
@@ -11,7 +11,7 @@ let productosGlobal =
 // INICIO
 // ======================================
 
-window.onload = ()=>{
+window.onload = () => {
 
     verificarLogin();
 
@@ -27,22 +27,22 @@ window.onload = ()=>{
 // MOSTRAR LINKS ADMIN
 // ======================================
 
-function mostrarLinksAdmin(){
+function mostrarLinksAdmin() {
 
     const usuario =
-    obtenerUsuario();
+        obtenerUsuario();
 
 
     const adminLinks =
-    document.getElementById(
-        "adminLinks"
-    );
+        document.getElementById(
+            "adminLinks"
+        );
 
 
-    if(
+    if (
         usuario &&
         usuario.rol === "admin"
-    ){
+    ) {
 
         adminLinks.innerHTML = `
 
@@ -66,31 +66,31 @@ function mostrarLinksAdmin(){
 // CARGAR PRODUCTOS
 // ======================================
 
-async function cargarProductos(){
+async function cargarProductos() {
 
-    try{
+    try {
 
         const respuesta =
-        await fetch(
+            await fetch(
 
-            `${API}/productos`
+                `${API}/productos`
 
-        );
+            );
 
 
         const productos =
-        await respuesta.json();
+            await respuesta.json();
 
 
         productosGlobal =
-        productos;
+            productos;
 
 
         mostrarProductos(
             productos
         );
 
-    }catch(error){
+    } catch (error) {
 
         console.log(error);
 
@@ -108,19 +108,19 @@ async function cargarProductos(){
 // MOSTRAR PRODUCTOS
 // ======================================
 
-function mostrarProductos(productos){
+function mostrarProductos(productos) {
 
     const contenedor =
-    document.getElementById(
-        "contenedorProductos"
-    );
+        document.getElementById(
+            "contenedorProductos"
+        );
 
 
     contenedor.innerHTML =
-    "";
+        "";
 
 
-    if(productos.length === 0){
+    if (productos.length === 0) {
 
         contenedor.innerHTML = `
 
@@ -135,7 +135,7 @@ function mostrarProductos(productos){
     }
 
 
-    productos.forEach((producto)=>{
+    productos.forEach((producto) => {
 
 
         contenedor.innerHTML += `
@@ -167,18 +167,54 @@ function mostrarProductos(productos){
 
 
                 <p>
-                    Stock:
-                    ${producto.cantidad}
-                </p>
+
+    Stock:
+
+    ${producto.cantidad <= 0
+
+                ?
+
+                `<span class="sin-stock">
+            Agotado
+        </span>`
+
+                :
+
+                producto.cantidad
+            }
+
+</p>
 
 
-                <button
-                    onclick='agregarCarrito(
-                        ${JSON.stringify(producto)}
-                    )'
-                >
-                    Agregar al Carrito
-                </button>
+                ${
+                  producto.cantidad <= 0
+
+                  ?
+
+                  `
+
+                 <button disabled>
+
+                  Sin Stock
+
+                  </button>
+
+                 `
+
+                 :
+
+                 `
+
+                 <button
+                   onclick='agregarCarrito(
+                   ${JSON.stringify(producto)}
+                 )'
+                 >
+                 Agregar al Carrito
+                 </button>
+
+                 `
+                }
 
 
             </div>
@@ -195,38 +231,38 @@ function mostrarProductos(productos){
 // AGREGAR AL CARRITO
 // ======================================
 
-function agregarCarrito(producto){
+function agregarCarrito(producto) {
 
     let carrito =
-    JSON.parse(
+        JSON.parse(
 
-        localStorage.getItem(
-            "carrito"
-        )
+            localStorage.getItem(
+                "carrito"
+            )
 
-    ) || [];
+        ) || [];
 
 
     // BUSCAR SI EXISTE
     const existe =
-    carrito.find((item)=>{
+        carrito.find((item) => {
 
-        return item.id === producto.id;
+            return item.id === producto.id;
 
-    });
+        });
 
 
-    if(existe){
+    if (existe) {
 
         existe.cantidad += 1;
 
-    }else{
+    } else {
 
         carrito.push({
 
             ...producto,
 
-            cantidad:1
+            cantidad: 1
 
         });
 
@@ -254,33 +290,33 @@ function agregarCarrito(producto){
 // FILTRAR PRODUCTOS
 // ======================================
 
-function filtrarProductos(){
+function filtrarProductos() {
 
     const texto =
-    document.getElementById(
-        "buscador"
-    ).value.toLowerCase();
+        document.getElementById(
+            "buscador"
+        ).value.toLowerCase();
 
 
     const filtrados =
-    productosGlobal.filter((producto)=>{
+        productosGlobal.filter((producto) => {
 
 
-        return(
+            return (
 
-            producto.nombre
-            .toLowerCase()
-            .includes(texto)
+                producto.nombre
+                    .toLowerCase()
+                    .includes(texto)
 
-            ||
+                ||
 
-            producto.categoria
-            .toLowerCase()
-            .includes(texto)
+                producto.categoria
+                    .toLowerCase()
+                    .includes(texto)
 
-        );
+            );
 
-    });
+        });
 
 
     mostrarProductos(
