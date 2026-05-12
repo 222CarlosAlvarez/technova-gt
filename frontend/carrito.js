@@ -186,14 +186,22 @@ async function comprarTodo(){
 
         let subtotalGeneral = 0;
 
-        let ivaGeneral = 0;
 
-        let totalGeneral = 0;
-
-
+        // RECORRER CARRITO
         for(const producto of carrito){
 
 
+            const subtotalProducto =
+
+                Number(producto.precio) *
+                Number(producto.cantidad);
+
+
+            subtotalGeneral +=
+            subtotalProducto;
+
+
+            // ENVIAR COMPRA
             const respuesta =
             await fetch(
 
@@ -247,36 +255,32 @@ async function comprarTodo(){
 
             }
 
-
-            subtotalGeneral +=
-parseFloat(datos.subtotal || 0);
-
-ivaGeneral +=
-parseFloat(datos.iva || 0);
-
-totalGeneral +=
-parseFloat(datos.total || 0);
-
-            ivaGeneral +=
-            datos.iva;
-
-            totalGeneral +=
-            datos.total;
-
         }
 
 
-        alert(`
+        // IVA
+        const ivaGeneral =
 
-Compra realizada correctamente
+            subtotalGeneral * 0.12;
+
+
+        // TOTAL
+        const totalGeneral =
+
+            subtotalGeneral + ivaGeneral;
+
+
+        alert(
+
+`Compra realizada correctamente
 
 Subtotal: Q${subtotalGeneral.toFixed(2)}
 
 IVA 12%: Q${ivaGeneral.toFixed(2)}
 
-Total: Q${totalGeneral.toFixed(2)}
+Total: Q${totalGeneral.toFixed(2)}`
 
-        `);
+        );
 
 
         // LIMPIAR CARRITO
@@ -289,6 +293,10 @@ Total: Q${totalGeneral.toFixed(2)}
 
 
         mostrarCarrito();
+
+
+        // RECARGAR
+        location.reload();
 
 
     }catch(error){
