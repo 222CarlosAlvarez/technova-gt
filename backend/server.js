@@ -1,12 +1,12 @@
+const cors = 
+require("cors");
+
 const express = require("express");
 const sqlite3 = require("sqlite3").verbose();
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
 
 const app = express();
-
-const cors =
-require("cors");
 
 app.use(cors());
 app.use(express.json());
