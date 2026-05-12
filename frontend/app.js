@@ -3,7 +3,7 @@
 // =========================
 
 const API =
-"http://localhost:3000";
+"https://technova-backend-bdgq.onrender.com";
 
 
 // =========================
