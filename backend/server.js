@@ -168,6 +168,10 @@ db.serialize(()=>{
 
             cantidad INTEGER,
 
+            subtotal REAL,
+
+            iva REAL,
+
             total REAL,
 
             fecha DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -660,39 +664,18 @@ app.post("/compras",(req,res)=>{
     } = req.body;
 
 
-    const total =
-
-        Number(precio) *
-        Number(cantidad);
-
-
-    db.run(
+    // VALIDAR STOCK
+    db.get(
 
         `
-        INSERT INTO compras
-        (
-            usuario_id,
-            producto_id,
-            nombre_producto,
-            precio,
-            cantidad,
-            total
-        )
-        VALUES(?,?,?,?,?,?)
+        SELECT *
+        FROM productos
+        WHERE id = ?
         `,
 
-        [
+        [producto_id],
 
-            usuario_id,
-            producto_id,
-            nombre_producto,
-            precio,
-            cantidad,
-            total
-
-        ],
-
-        function(err){
+        (err,producto)=>{
 
             if(err){
 
@@ -705,32 +688,140 @@ app.post("/compras",(req,res)=>{
             }
 
 
-            // RESTAR STOCK
+            if(!producto){
+
+                return res.status(404).json({
+
+                    mensaje:
+                    "Producto no encontrado"
+
+                });
+
+            }
+
+
+            // VALIDAR STOCK
+            if(producto.cantidad < cantidad){
+
+                return res.status(400).json({
+
+                    mensaje:
+                    "Stock insuficiente"
+
+                });
+
+            }
+
+
+            // CALCULOS
+            const subtotal =
+
+                Number(precio) *
+                Number(cantidad);
+
+
+            const iva =
+
+                subtotal * 0.12;
+
+
+            const total =
+
+                subtotal + iva;
+
+
+            // GUARDAR COMPRA
             db.run(
 
                 `
-                UPDATE productos
-                SET cantidad =
-                cantidad - ?
-                WHERE id = ?
+                INSERT INTO compras
+                (
+                    usuario_id,
+                    producto_id,
+                    nombre_producto,
+                    precio,
+                    cantidad,
+                    subtotal,
+                    iva,
+                    total
+                )
+                VALUES(?,?,?,?,?,?,?,?)
                 `,
 
                 [
 
+                    usuario_id,
+                    producto_id,
+                    nombre_producto,
+                    precio,
                     cantidad,
-                    producto_id
+                    subtotal,
+                    iva,
+                    total
 
-                ]
+                ],
+
+                function(err){
+
+                    if(err){
+
+                        return res.status(500).json({
+
+                            error:err.message
+
+                        });
+
+                    }
+
+
+                    // DESCONTAR STOCK
+                    db.run(
+
+                        `
+                        UPDATE productos
+                        SET cantidad =
+                        cantidad - ?
+                        WHERE id = ?
+                        `,
+
+                        [
+
+                            cantidad,
+                            producto_id
+
+                        ],
+
+                        function(err){
+
+                            if(err){
+
+                                return res.status(500).json({
+
+                                    error:err.message
+
+                                });
+
+                            }
+
+
+                            res.json({
+
+                                mensaje:
+                                "Compra realizada",
+
+                                subtotal,
+                                iva,
+                                total
+
+                            });
+
+                        }
+
+                    );
+
+                }
 
             );
-
-
-            res.json({
-
-                mensaje:
-                "Compra realizada"
-
-            });
 
         }
 
