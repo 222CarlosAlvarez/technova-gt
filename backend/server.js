@@ -806,14 +806,19 @@ app.post("/compras",(req,res)=>{
 
                             res.json({
 
-                                mensaje:
-                                "Compra realizada",
+    mensaje:
+    "Compra realizada",
 
-                                subtotal,
-                                iva,
-                                total
+    subtotal:
+    Number(subtotal),
 
-                            });
+    iva:
+    Number(iva),
+
+    total:
+    Number(total)
+
+});
 
                         }
 

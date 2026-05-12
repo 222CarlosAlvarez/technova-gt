@@ -249,7 +249,13 @@ async function comprarTodo(){
 
 
             subtotalGeneral +=
-            datos.subtotal;
+parseFloat(datos.subtotal || 0);
+
+ivaGeneral +=
+parseFloat(datos.iva || 0);
+
+totalGeneral +=
+parseFloat(datos.total || 0);
 
             ivaGeneral +=
             datos.iva;
