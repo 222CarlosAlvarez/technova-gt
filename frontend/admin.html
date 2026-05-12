@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Panel Administrador</title>
+
+<link rel="stylesheet"
+href="style.css">
+
+</head>
+
+<body>
+
+
+<!-- NAVBAR -->
+<header class="navbar">
+
+    <h1>
+
+    Panel Administrador
+
+    </h1>
+
+    <div>
+
+        <a href="tienda.html">
+
+            <button>
+
+                Tienda
+
+            </button>
+
+        </a>
+
+        <a href="inventario.html">
+
+            <button>
+
+                Inventario
+
+            </button>
+
+        </a>
+
+        <a href="historial.html">
+
+            <button>
+
+                Historial
+
+            </button>
+
+        </a>
+
+        <button onclick="cerrarSesion()">
+
+            Cerrar Sesión
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- DASHBOARD -->
+<section class="dashboard">
+
+
+    <div class="dashboard-card">
+
+        <h2 id="totalProductos">
+
+            0
+
+        </h2>
+
+        <p>
+
+        Productos
+
+        </p>
+
+    </div>
+
+
+    <div class="dashboard-card">
+
+        <h2 id="totalStock">
+
+            0
+
+        </h2>
+
+        <p>
+
+        Stock Total
+
+        </p>
+
+    </div>
+
+
+    <div class="dashboard-card">
+
+        <h2 id="totalVentas">
+
+            Q0
+
+        </h2>
+
+        <p>
+
+        Ventas
+
+        </p>
+
+    </div>
+
+
+</section>
+
+
+<!-- PRODUCTOS -->
+<section>
+
+    <h2 style="padding:20px;">
+
+    Productos Disponibles
+
+    </h2>
+
+    <div
+    id="productos"
+    class="productos">
+
+    </div>
+
+</section>
+
+
+<script src="admin.js"></script>
+
+</body>
+</html>

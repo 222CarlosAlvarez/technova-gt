@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Mi Perfil - TECHNOVA GT</title>
+
+<link rel="stylesheet"
+href="style.css">
+
+</head>
+
+<body>
+
+
+<!-- =========================
+NAVBAR
+========================= -->
+
+<header class="navbar">
+
+    <h1>
+
+    Mi Perfil
+
+    </h1>
+
+    <div>
+
+        <a href="index.html">
+
+            <button>
+
+                Inicio
+
+            </button>
+
+        </a>
+
+        <a href="tienda.html">
+
+            <button>
+
+                Tienda
+
+            </button>
+
+        </a>
+
+        <a href="carrito.html">
+
+            <button>
+
+                Carrito
+
+            </button>
+
+        </a>
+
+        <a href="historial.html">
+
+            <button>
+
+                Historial
+
+            </button>
+
+        </a>
+
+        <button onclick="cerrarSesion()">
+
+            Cerrar Sesión
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- =========================
+PERFIL
+========================= -->
+
+<section class="perfil">
+
+
+    <h1>
+
+    Información del Usuario
+
+    </h1>
+
+
+    <div class="perfil-info">
+
+        <p>
+
+            <strong>Nombre:</strong>
+
+            <span id="nombre">
+
+            </span>
+
+        </p>
+
+
+        <p>
+
+            <strong>Correo:</strong>
+
+            <span id="correo">
+
+            </span>
+
+        </p>
+
+
+        <p>
+
+            <strong>Rol:</strong>
+
+            <span id="rol">
+
+            </span>
+
+        </p>
+
+    </div>
+
+
+</section>
+
+
+<!-- =========================
+RESUMEN COMPRAS
+========================= -->
+
+<section class="perfil">
+
+    <h1>
+
+    Resumen de Compras
+
+    </h1>
+
+
+    <p>
+
+        Compras realizadas:
+
+        <strong id="cantidadCompras">
+
+        0
+
+        </strong>
+
+    </p>
+
+
+    <p>
+
+        Total gastado:
+
+        <strong id="totalGastado">
+
+        Q0.00
+
+        </strong>
+
+    </p>
+
+</section>
+
+
+<!-- =========================
+ULTIMAS COMPRAS
+========================= -->
+
+<section class="perfil">
+
+    <h1>
+
+    Últimas Compras
+
+    </h1>
+
+    <div id="ultimasCompras">
+
+    </div>
+
+</section>
+
+
+<script src="app.js"></script>
+<script src="perfil.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Inventario</title>
+
+<link rel="stylesheet"
+href="style.css">
+
+</head>
+
+<body>
+
+
+<!-- =========================
+NAVBAR
+========================= -->
+
+<header class="navbar">
+
+    <h1>
+
+    Inventario
+
+    </h1>
+
+    <div>
+
+        <a href="admin.html">
+
+            <button>
+
+                Administrador
+
+            </button>
+
+        </a>
+
+        <a href="tienda.html">
+
+            <button>
+
+                Tienda
+
+            </button>
+
+        </a>
+
+        <a href="index.html">
+
+            <button>
+
+                Inicio
+
+            </button>
+
+        </a>
+
+        <button onclick="cerrarSesion()">
+
+            Cerrar Sesión
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- =========================
+BUSCADOR
+========================= -->
+
+<section class="buscador">
+
+    <input
+    type="text"
+    id="buscarCategoria"
+    placeholder="Buscar categoría">
+
+    <button onclick="buscarCategoria()">
+
+        Buscar
+
+    </button>
+
+</section>
+
+
+<!-- =========================
+FORMULARIO PRODUCTOS
+========================= -->
+
+<section class="formulario">
+
+    <input
+    type="text"
+    id="nombre"
+    placeholder="Nombre producto">
+
+
+    <input
+    type="number"
+    id="precio"
+    placeholder="Precio">
+
+
+    <input
+    type="number"
+    id="cantidad"
+    placeholder="Cantidad">
+
+
+    <input
+    type="text"
+    id="categoria"
+    placeholder="Categoría">
+
+
+    <input
+    type="text"
+    id="imagen"
+    placeholder="URL imagen">
+
+
+    <button onclick="agregarProducto()">
+
+        Agregar Producto
+
+    </button>
+
+</section>
+
+
+<!-- =========================
+RESUMEN INVENTARIO
+========================= -->
+
+<section class="dashboard">
+
+
+    <div class="dashboard-card">
+
+        <h2 id="totalProductos">
+
+            0
+
+        </h2>
+
+        <p>
+
+        Productos
+
+        </p>
+
+    </div>
+
+
+    <div class="dashboard-card">
+
+        <h2 id="totalStock">
+
+            0
+
+        </h2>
+
+        <p>
+
+        Stock Total
+
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+PRODUCTOS
+========================= -->
+
+<section
+id="inventario"
+class="productos">
+
+</section>
+
+
+<script src="app.js"></script>
+<script src="inventario.js"></script>
+
+</body>
+</html>

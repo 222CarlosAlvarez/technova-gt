@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>TECHNOVA GT</title>
+
+<link rel="stylesheet"
+href="style.css">
+
+</head>
+
+<body>
+
+
+<!-- =========================
+NAVBAR
+========================= -->
+
+<header class="navbar">
+
+    <h1>
+
+    TECHNOVA GT
+
+    </h1>
+
+    <div id="navButtons">
+
+    </div>
+
+</header>
+
+
+<!-- =========================
+HERO
+========================= -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <h2>
+
+        Tecnología de Última Generación
+
+        </h2>
+
+        <p>
+
+        Compra laptops, celulares,
+        accesorios gamer, audífonos,
+        monitores y mucho más.
+
+        </p>
+
+        <a href="tienda.html">
+
+            <button>
+
+                Ir a la Tienda
+
+            </button>
+
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+CATEGORIAS
+========================= -->
+
+<section class="categorias">
+
+    <h2>
+
+    Categorías
+
+    </h2>
+
+    <div class="categorias-grid">
+
+
+        <div class="categoria-card">
+
+            <h3>
+
+            Laptops
+
+            </h3>
+
+        </div>
+
+
+        <div class="categoria-card">
+
+            <h3>
+
+            Celulares
+
+            </h3>
+
+        </div>
+
+
+        <div class="categoria-card">
+
+            <h3>
+
+            Audífonos
+
+            </h3>
+
+        </div>
+
+
+        <div class="categoria-card">
+
+            <h3>
+
+            Monitores
+
+            </h3>
+
+        </div>
+
+
+        <div class="categoria-card">
+
+            <h3>
+
+            Accesorios Gamer
+
+            </h3>
+
+        </div>
+
+
+        <div class="categoria-card">
+
+            <h3>
+
+            Smartwatch
+
+            </h3>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+PRODUCTOS DESTACADOS
+========================= -->
+
+<section>
+
+    <h2 class="titulo-section">
+
+    Productos Destacados
+
+    </h2>
+
+    <div
+    id="productos"
+    class="productos">
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+FOOTER
+========================= -->
+
+<footer class="footer">
+
+    <h3>
+
+    TECHNOVA GT
+
+    </h3>
+
+    <p>
+
+    Guatemala © 2026
+
+    </p>
+
+</footer>
+
+
+<script src="app.js"></script>
+
+<script>
+
+const usuario =
+obtenerUsuario();
+
+
+// =========================
+// NAVBAR
+// =========================
+
+function cargarNavbar(){
+
+    const nav =
+    document.getElementById(
+        "navButtons"
+    );
+
+    // LOGIN
+    if(!usuario){
+
+        nav.innerHTML = `
+
+        <a href="login.html">
+
+            <button>
+
+                Login
+
+            </button>
+
+        </a>
+
+        <a href="register.html">
+
+            <button>
+
+                Registrarse
+
+            </button>
+
+        </a>
+
+        `;
+
+        return;
+
+    }
+
+
+    // ADMIN
+    if(usuario.rol === "admin"){
+
+        nav.innerHTML = `
+
+        <a href="admin.html">
+
+            <button>
+
+                Administrador
+
+            </button>
+
+        </a>
+
+        <a href="inventario.html">
+
+            <button>
+
+                Inventario
+
+            </button>
+
+        </a>
+
+        <a href="tienda.html">
+
+            <button>
+
+                Tienda
+
+            </button>
+
+        </a>
+
+        <button onclick="cerrarSesion()">
+
+            Cerrar Sesión
+
+        </button>
+
+        `;
+
+    }
+
+
+    // USER
+    else{
+
+        nav.innerHTML = `
+
+        <a href="tienda.html">
+
+            <button>
+
+                Tienda
+
+            </button>
+
+        </a>
+
+        <a href="carrito.html">
+
+            <button>
+
+                Carrito
+
+            </button>
+
+        </a>
+
+        <button onclick="cerrarSesion()">
+
+            Cerrar Sesión
+
+        </button>
+
+        `;
+
+    }
+
+}
+
+
+// =========================
+// PRODUCTOS DESTACADOS
+// =========================
+
+async function cargarProductos(){
+
+    try{
+
+        const respuesta =
+        await fetch(
+            `${API}/productos`
+        );
+
+        const productos =
+        await respuesta.json();
+
+        const contenedor =
+        document.getElementById(
+            "productos"
+        );
+
+        contenedor.innerHTML = "";
+
+
+        // MOSTRAR SOLO 6
+        productos.slice(0,6)
+        .forEach(producto=>{
+
+            contenedor.innerHTML += `
+
+            <div class="card">
+
+                <img
+                src="${producto.imagen}">
+
+                <div class="card-content">
+
+                    <h3>
+
+                    ${producto.nombre}
+
+                    </h3>
+
+                    <p>
+
+                    ${producto.categoria}
+
+                    </p>
+
+                    <p>
+
+                    ${formatoMoneda(
+                        producto.precio
+                    )}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            `;
+
+        });
+
+    }catch(error){
+
+        console.log(error);
+
+    }
+
+}
+
+
+// =========================
+// INICIAR
+// =========================
+
+cargarNavbar();
+
+cargarProductos();
+
+</script>
+
+</body>
+</html>
