@@ -2,12 +2,7 @@
 // VARIABLES
 // ======================================
 
-let carrito =
-JSON.parse(
-
-    localStorage.getItem("carrito")
-
-) || [];
+let carrito = [];
 
 
 
@@ -19,9 +14,34 @@ window.onload = ()=>{
 
     verificarLogin();
 
-    mostrarCarrito();
+    mostrarLinksAdmin(
+        "adminLinks"
+    );
+
+    cargarCarrito();
 
 };
+
+
+
+// ======================================
+// CARGAR CARRITO
+// ======================================
+
+function cargarCarrito(){
+
+    carrito = JSON.parse(
+
+        localStorage.getItem(
+            "carrito"
+        )
+
+    ) || [];
+
+
+    mostrarCarrito();
+
+}
 
 
 
@@ -37,7 +57,7 @@ function mostrarCarrito(){
     );
 
 
-    const totalHTML =
+    const totalTexto =
     document.getElementById(
         "totalCarrito"
     );
@@ -47,38 +67,48 @@ function mostrarCarrito(){
     "";
 
 
-    let total = 0;
-
-
+    // CARRITO VACIO
     if(carrito.length === 0){
 
         contenedor.innerHTML = `
 
-            <h3>
-                Tu carrito está vacío
-            </h3>
+            <h2>
+                Carrito vacío
+            </h2>
 
         `;
 
 
-        totalHTML.innerText =
-        "Q0";
+        totalTexto.innerHTML =
+        "Q0.00";
+
 
         return;
 
     }
 
 
+    let subtotal = 0;
+
+
+    // RECORRER PRODUCTOS
     carrito.forEach((producto,index)=>{
 
 
-        const subtotal =
-
-            Number(producto.precio) *
-            Number(producto.cantidad);
+        const precio =
+        Number(producto.precio) || 0;
 
 
-        total += subtotal;
+        const cantidad =
+        Number(producto.cantidad) || 0;
+
+
+        const totalProducto =
+        precio * cantidad;
+
+
+        subtotal +=
+        totalProducto;
 
 
         contenedor.innerHTML += `
@@ -99,25 +129,25 @@ function mostrarCarrito(){
 
                 <p>
                     Precio:
-                    Q${producto.precio}
+                    Q${precio.toFixed(2)}
                 </p>
 
 
                 <p>
                     Cantidad:
-                    ${producto.cantidad}
+                    ${cantidad}
                 </p>
 
 
                 <p>
                     Subtotal:
-                    Q${subtotal}
+                    Q${totalProducto.toFixed(2)}
                 </p>
 
 
                 <button
                     class="btn-eliminar"
-                    onclick="eliminarDelCarrito(${index})"
+                    onclick="eliminarProducto(${index})"
                 >
                     Eliminar
                 </button>
@@ -130,8 +160,40 @@ function mostrarCarrito(){
     });
 
 
-    totalHTML.innerText =
-    `Q${total}`;
+    // IVA
+    const iva =
+    subtotal * 0.12;
+
+
+    // TOTAL
+    const total =
+    subtotal + iva;
+
+
+    totalTexto.innerHTML = `
+
+        <p>
+
+            Subtotal:
+            Q${subtotal.toFixed(2)}
+
+        </p>
+
+        <p>
+
+            IVA 12%:
+            Q${iva.toFixed(2)}
+
+        </p>
+
+        <h2>
+
+            Total:
+            Q${total.toFixed(2)}
+
+        </h2>
+
+    `;
 
 }
 
@@ -141,7 +203,7 @@ function mostrarCarrito(){
 // ELIMINAR PRODUCTO
 // ======================================
 
-function eliminarDelCarrito(index){
+function eliminarProducto(index){
 
     carrito.splice(index,1);
 
@@ -167,20 +229,6 @@ function eliminarDelCarrito(index){
 
 async function comprarTodo(){
 
-    // OBTENER CARRITO
-    const carrito = JSON.parse(
-
-        localStorage.getItem(
-            "carrito"
-        )
-
-    ) || [];
-
-
-    // OBTENER USUARIO
-    const usuario =
-    obtenerUsuario();
-
 
     // VALIDAR
     if(carrito.length === 0){
@@ -194,7 +242,12 @@ async function comprarTodo(){
     }
 
 
+    const usuario =
+    obtenerUsuario();
+
+
     try{
+
 
         let subtotalGeneral = 0;
 
@@ -204,34 +257,19 @@ async function comprarTodo(){
 
 
             const precio =
-            Number(producto.precio);
+            Number(producto.precio) || 0;
 
 
             const cantidad =
-            Number(producto.cantidad);
+            Number(producto.cantidad) || 0;
 
 
-            // VALIDAR
-            if(
-
-                isNaN(precio) ||
-                isNaN(cantidad)
-
-            ){
-
-                console.log(producto);
-
-                continue;
-
-            }
-
-
-            // CALCULAR SUBTOTAL
+            // SUBTOTAL
             subtotalGeneral +=
             precio * cantidad;
 
 
-            // ENVIAR AL BACKEND
+            // ENVIAR COMPRA
             const respuesta =
             await fetch(
 
@@ -278,7 +316,11 @@ async function comprarTodo(){
             if(!respuesta.ok){
 
                 alert(
-                    datos.mensaje
+
+                    datos.mensaje ||
+
+                    "Error realizando compra"
+
                 );
 
                 return;
@@ -289,13 +331,13 @@ async function comprarTodo(){
 
 
         // IVA
-        const ivaGeneral =
+        const iva =
         subtotalGeneral * 0.12;
 
 
         // TOTAL
-        const totalGeneral =
-        subtotalGeneral + ivaGeneral;
+        const total =
+        subtotalGeneral + iva;
 
 
         // MENSAJE
@@ -305,21 +347,33 @@ async function comprarTodo(){
 
 Subtotal: Q${subtotalGeneral.toFixed(2)}
 
-IVA 12%: Q${ivaGeneral.toFixed(2)}
+IVA 12%: Q${iva.toFixed(2)}
 
-Total: Q${totalGeneral.toFixed(2)}`
+Total: Q${total.toFixed(2)}`
 
         );
 
 
-        // LIMPIAR
+        // LIMPIAR CARRITO
+        carrito = [];
+
+
         localStorage.removeItem(
             "carrito"
         );
 
 
+        // ACTUALIZAR
+        mostrarCarrito();
+
+
         // RECARGAR
-        window.location.reload();
+        setTimeout(()=>{
+
+            window.location.href =
+            "historial.html";
+
+        },1000);
 
 
     }catch(error){
