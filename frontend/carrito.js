@@ -167,10 +167,22 @@ function eliminarDelCarrito(index){
 
 async function comprarTodo(){
 
+    // OBTENER CARRITO
+    const carrito = JSON.parse(
+
+        localStorage.getItem(
+            "carrito"
+        )
+
+    ) || [];
+
+
+    // OBTENER USUARIO
     const usuario =
     obtenerUsuario();
 
 
+    // VALIDAR
     if(carrito.length === 0){
 
         alert(
@@ -187,21 +199,39 @@ async function comprarTodo(){
         let subtotalGeneral = 0;
 
 
-        // RECORRER CARRITO
+        // RECORRER PRODUCTOS
         for(const producto of carrito){
 
 
-            const subtotalProducto =
-
-                Number(producto.precio) *
-                Number(producto.cantidad);
+            const precio =
+            Number(producto.precio);
 
 
+            const cantidad =
+            Number(producto.cantidad);
+
+
+            // VALIDAR
+            if(
+
+                isNaN(precio) ||
+                isNaN(cantidad)
+
+            ){
+
+                console.log(producto);
+
+                continue;
+
+            }
+
+
+            // CALCULAR SUBTOTAL
             subtotalGeneral +=
-            subtotalProducto;
+            precio * cantidad;
 
 
-            // ENVIAR COMPRA
+            // ENVIAR AL BACKEND
             const respuesta =
             await fetch(
 
@@ -228,10 +258,10 @@ async function comprarTodo(){
                         producto.nombre,
 
                         precio:
-                        producto.precio,
+                        precio,
 
                         cantidad:
-                        producto.cantidad
+                        cantidad
 
                     })
 
@@ -260,16 +290,15 @@ async function comprarTodo(){
 
         // IVA
         const ivaGeneral =
-
-            subtotalGeneral * 0.12;
+        subtotalGeneral * 0.12;
 
 
         // TOTAL
         const totalGeneral =
+        subtotalGeneral + ivaGeneral;
 
-            subtotalGeneral + ivaGeneral;
 
-
+        // MENSAJE
         alert(
 
 `Compra realizada correctamente
@@ -283,20 +312,14 @@ Total: Q${totalGeneral.toFixed(2)}`
         );
 
 
-        // LIMPIAR CARRITO
-        carrito = [];
-
-
+        // LIMPIAR
         localStorage.removeItem(
             "carrito"
         );
 
 
-        mostrarCarrito();
-
-
         // RECARGAR
-        location.reload();
+        window.location.reload();
 
 
     }catch(error){
