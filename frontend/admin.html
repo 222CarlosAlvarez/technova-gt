@@ -11,7 +11,7 @@
     >
 
     <title>
-        Panel Administrador
+        Admin | TECHNOVA GT
     </title>
 
     <link
@@ -24,124 +24,111 @@
 <body>
 
 
-    <!-- HEADER -->
+    <!-- ===================================== -->
+    <!-- NAVBAR -->
+    <!-- ===================================== -->
 
-    <header class="header">
+    <nav class="navbar">
+
+
+        <div class="logo">
+
+            TECHNOVA GT
+
+        </div>
+
+
+        <div class="links">
+
+
+            <a href="index.html">
+
+                Inicio
+
+            </a>
+
+
+            <a href="tienda.html">
+
+                Tienda
+
+            </a>
+
+
+            <a href="inventario.html">
+
+                Inventario
+
+            </a>
+
+
+            <a href="carrito.html">
+
+                Carrito
+
+            </a>
+
+
+            <a href="historial.html">
+
+                Historial
+
+            </a>
+
+
+            <a href="perfil.html">
+
+                Perfil
+
+            </a>
+
+
+            <a
+                href="#"
+                onclick="logout()"
+            >
+
+                Cerrar Sesión
+
+            </a>
+
+
+        </div>
+
+
+    </nav>
+
+
+
+    <!-- ===================================== -->
+    <!-- PANEL ADMIN -->
+    <!-- ===================================== -->
+
+    <section class="admin-panel">
 
 
         <h1>
-            TECHNOVA GT - ADMIN
+
+            Panel Administrador
+
         </h1>
 
 
-        <nav>
+        <div
+            class="estadisticas-grid"
+            id="estadisticas"
+        >
 
-            <a href="index.html">
-                Inicio
-            </a>
-
-            <a href="tienda.html">
-                Tienda
-            </a>
-
-            <a href="inventario.html">
-                Inventario
-            </a>
-
-            <a href="perfil.html">
-                Perfil
-            </a>
-
-            <button onclick="cerrarSesion()">
-                Cerrar Sesión
-            </button>
-
-        </nav>
+        </div>
 
 
-    </header>
+    </section>
 
 
 
-    <!-- CONTENIDO -->
-
-    <main class="container">
-
-
-        <section class="form-admin">
-
-
-            <h2>
-                Agregar Producto
-            </h2>
-
-
-            <input
-                type="text"
-                id="nombre"
-                placeholder="Nombre producto"
-            >
-
-
-            <input
-                type="number"
-                id="precio"
-                placeholder="Precio"
-            >
-
-
-            <input
-                type="number"
-                id="cantidad"
-                placeholder="Cantidad"
-            >
-
-
-            <input
-                type="text"
-                id="categoria"
-                placeholder="Categoría"
-            >
-
-
-            <input
-                type="text"
-                id="imagen"
-                placeholder="URL Imagen"
-            >
-
-
-            <button onclick="agregarProducto()">
-                Agregar Producto
-            </button>
-
-
-        </section>
-
-
-
-        <section>
-
-
-            <h2>
-                Productos Registrados
-            </h2>
-
-
-            <div
-                id="productosAdmin"
-                class="productos-grid"
-            >
-
-            </div>
-
-
-        </section>
-
-
-    </main>
-
-
+    <!-- ===================================== -->
+    <!-- SCRIPTS -->
+    <!-- ===================================== -->
 
     <script src="app.js"></script>
 

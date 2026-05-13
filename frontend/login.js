@@ -1,8 +1,7 @@
-// ======================================
-// LOGIN
-// ======================================
+async function login(event){
 
-async function login(){
+    event.preventDefault();
+
 
     const correo =
     document.getElementById(
@@ -16,22 +15,8 @@ async function login(){
     ).value;
 
 
-    // VALIDAR
-    if(
-        !correo ||
-        !password
-    ){
-
-        alert(
-            "Completa todos los campos"
-        );
-
-        return;
-
-    }
-
-
     try{
+
 
         const respuesta =
         await fetch(
@@ -63,7 +48,7 @@ async function login(){
         await respuesta.json();
 
 
-        // ERROR LOGIN
+        // ERROR
         if(!respuesta.ok){
 
             alert(
@@ -81,33 +66,17 @@ async function login(){
         );
 
 
-        alert(
-            "Login correcto"
-        );
+        // REDIRECCION
+        window.location.href =
+        "index.html";
 
-
-        // ADMIN
-        if(
-            datos.usuario.rol ===
-            "admin"
-        ){
-
-            window.location.href =
-            "admin.html";
-
-        }else{
-
-            window.location.href =
-            "index.html";
-
-        }
 
     }catch(error){
 
         console.log(error);
 
         alert(
-            "Error conexión servidor"
+            "Error iniciando sesión"
         );
 
     }

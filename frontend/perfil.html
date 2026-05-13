@@ -11,7 +11,7 @@
     >
 
     <title>
-        Perfil
+        Perfil | TECHNOVA GT
     </title>
 
     <link
@@ -24,173 +24,101 @@
 <body>
 
 
-    <!-- HEADER -->
+    <!-- ===================================== -->
+    <!-- NAVBAR -->
+    <!-- ===================================== -->
 
-    <header class="header">
+    <nav class="navbar">
 
 
-        <h1>
+        <div class="logo">
+
             TECHNOVA GT
-        </h1>
+
+        </div>
 
 
-        <nav>
+        <div class="links">
+
 
             <a href="index.html">
+
                 Inicio
+
             </a>
+
 
             <a href="tienda.html">
+
                 Tienda
+
             </a>
+
 
             <a href="carrito.html">
+
                 Carrito
+
             </a>
+
 
             <a href="historial.html">
+
                 Historial
+
             </a>
 
-            <button onclick="cerrarSesion()">
-                Cerrar Sesión
-            </button>
 
-        </nav>
+            <div id="adminLinks"></div>
 
 
-    </header>
-
-
-
-    <!-- CONTENIDO -->
-
-    <main class="container">
-
-
-        <section class="perfil-container">
-
-
-            <h2>
-                Mi Perfil
-            </h2>
-
-
-            <div class="perfil-card">
-
-
-                <p>
-
-                    <strong>
-                        Nombre:
-                    </strong>
-
-                    <span id="nombreUsuario">
-
-                    </span>
-
-                </p>
-
-
-                <p>
-
-                    <strong>
-                        Correo:
-                    </strong>
-
-                    <span id="correoUsuario">
-
-                    </span>
-
-                </p>
-
-
-                <p>
-
-                    <strong>
-                        Rol:
-                    </strong>
-
-                    <span id="rolUsuario">
-
-                    </span>
-
-                </p>
-
-
-            </div>
-
-
-        </section>
-
-
-
-        <!-- RESUMEN COMPRAS -->
-
-        <section class="perfil-compras">
-
-
-            <h2>
-                Resumen de Compras
-            </h2>
-
-
-            <div class="resumen-box">
-
-
-                <h3>
-
-                    Compras realizadas:
-
-                    <span id="cantidadCompras">
-                        0
-                    </span>
-
-                </h3>
-
-
-                <h3>
-
-                    Total gastado:
-
-                    <span id="totalGastado">
-                        Q0
-                    </span>
-
-                </h3>
-
-
-            </div>
-
-
-        </section>
-
-
-
-        <!-- HISTORIAL -->
-
-        <section>
-
-
-            <h2>
-                Últimas Compras
-            </h2>
-
-
-            <div
-                id="historialPerfil"
-                class="productos-grid"
+            <a
+                href="#"
+                onclick="logout()"
             >
 
-            </div>
+                Cerrar Sesión
+
+            </a>
 
 
-        </section>
+        </div>
 
 
-    </main>
+    </nav>
 
 
+
+    <!-- ===================================== -->
+    <!-- PERFIL -->
+    <!-- ===================================== -->
+
+    <section class="perfil-container">
+
+
+        <div class="perfil-card">
+
+
+            <h1>
+
+                Mi Perfil
+
+            </h1>
+
+
+            <div id="datosPerfil"></div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- ===================================== -->
+    <!-- SCRIPTS -->
+    <!-- ===================================== -->
 
     <script src="app.js"></script>
 

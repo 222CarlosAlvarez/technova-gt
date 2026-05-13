@@ -1,182 +1,88 @@
-// ======================================
+// =====================================
 // INICIO
-// ======================================
+// =====================================
 
 window.onload = ()=>{
 
     verificarLogin();
 
-    cargarPerfil();
+    mostrarLinksAdmin(
+        "adminLinks"
+    );
 
-    cargarCompras();
+    mostrarPerfil();
 
 };
 
 
 
-// ======================================
-// CARGAR PERFIL
-// ======================================
+// =====================================
+// MOSTRAR PERFIL
+// =====================================
 
-function cargarPerfil(){
-
-    const usuario =
-    obtenerUsuario();
-
-
-    document.getElementById(
-        "nombreUsuario"
-    ).innerText =
-    usuario.nombre;
-
-
-    document.getElementById(
-        "correoUsuario"
-    ).innerText =
-    usuario.correo;
-
-
-    document.getElementById(
-        "rolUsuario"
-    ).innerText =
-    usuario.rol;
-
-}
-
-
-
-// ======================================
-// CARGAR COMPRAS
-// ======================================
-
-async function cargarCompras(){
+function mostrarPerfil(){
 
     const usuario =
     obtenerUsuario();
 
 
-    try{
-
-        const respuesta =
-        await fetch(
-
-            `${API}/compras/${usuario.id}`
-
-        );
+    const contenedor =
+    document.getElementById(
+        "datosPerfil"
+    );
 
 
-        const compras =
-        await respuesta.json();
+    contenedor.innerHTML = `
+
+        <div class="perfil-info">
 
 
-        const historial =
-        document.getElementById(
-            "historialPerfil"
-        );
+            <p>
+
+                <strong>
+                    ID:
+                </strong>
+
+                ${usuario.id}
+
+            </p>
 
 
-        historial.innerHTML =
-        "";
+            <p>
+
+                <strong>
+                    Nombre:
+                </strong>
+
+                ${usuario.nombre}
+
+            </p>
 
 
-        // SI NO HAY COMPRAS
-        if(compras.length === 0){
+            <p>
 
-            historial.innerHTML = `
+                <strong>
+                    Correo:
+                </strong>
 
-                <h3>
-                    No hay compras registradas
-                </h3>
+                ${usuario.correo}
 
-            `;
-
-            return;
-
-        }
+            </p>
 
 
-        let totalGastado = 0;
+            <p>
+
+                <strong>
+                    Rol:
+                </strong>
+
+                ${usuario.rol}
+
+            </p>
 
 
-        compras.forEach((compra)=>{
+        </div>
 
-
-            totalGastado +=
-            Number(compra.total);
-
-
-            historial.innerHTML += `
-
-                <div class="card-producto">
-
-
-                    <h3>
-                        ${compra.nombre_producto}
-                    </h3>
-
-
-                    <p>
-                        Cantidad:
-                        ${compra.cantidad}
-                    </p>
-
-
-                    <p>
-                        Precio:
-                        Q${compra.precio}
-                    </p>
-
-
-                    <p>
-    Subtotal:
-    Q${compra.subtotal}
-</p>
-
-<p>
-    IVA:
-    Q${compra.iva}
-</p>
-
-<p>
-    Total:
-    Q${compra.total}
-</p>
-
-
-                    <p>
-                        Fecha:
-                        ${compra.fecha}
-                    </p>
-
-
-                </div>
-
-            `;
-
-        });
-
-
-        // RESUMEN
-        document.getElementById(
-            "cantidadCompras"
-        ).innerText =
-        compras.length;
-
-
-        document.getElementById(
-            "totalGastado"
-        ).innerText =
-        `Q${totalGastado}`;
-
-
-    }catch(error){
-
-        console.log(error);
-
-        alert(
-            "Error cargando perfil"
-        );
-
-    }
+    `;
 
 }

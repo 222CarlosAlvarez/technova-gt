@@ -11,7 +11,7 @@
     >
 
     <title>
-        Carrito
+        Carrito | TECHNOVA GT
     </title>
 
     <link
@@ -24,85 +24,129 @@
 <body>
 
 
-    <!-- HEADER -->
+    <!-- ===================================== -->
+    <!-- NAVBAR -->
+    <!-- ===================================== -->
 
-    <header class="header">
+    <nav class="navbar">
+
+
+        <div class="logo">
+
+            TECHNOVA GT
+
+        </div>
+
+
+        <div class="links">
+
+
+            <a href="index.html">
+
+                Inicio
+
+            </a>
+
+
+            <a href="tienda.html">
+
+                Tienda
+
+            </a>
+
+
+            <a href="historial.html">
+
+                Historial
+
+            </a>
+
+
+            <a href="perfil.html">
+
+                Perfil
+
+            </a>
+
+
+            <div id="adminLinks"></div>
+
+
+            <a
+                href="#"
+                onclick="logout()"
+            >
+
+                Cerrar Sesión
+
+            </a>
+
+
+        </div>
+
+
+    </nav>
+
+
+
+    <!-- ===================================== -->
+    <!-- TITULO -->
+    <!-- ===================================== -->
+
+    <section class="titulo-pagina">
 
 
         <h1>
-            TECHNOVA GT
+
+            Mi Carrito
+
         </h1>
 
 
-        <nav>
-
-            <a href="index.html">
-                Inicio
-            </a>
-
-            <a href="tienda.html">
-                Tienda
-            </a>
-
-            <a href="perfil.html">
-                Perfil
-            </a>
-
-            <button onclick="cerrarSesion()">
-                Cerrar Sesión
-            </button>
-
-        </nav>
-
-
-    </header>
+    </section>
 
 
 
-    <!-- CONTENIDO -->
+    <!-- ===================================== -->
+    <!-- CARRITO -->
+    <!-- ===================================== -->
 
-    <main class="container">
+    <section
+        class="contenedor-productos"
+        id="contenedorCarrito"
+    >
+
+    </section>
 
 
-        <h2>
-            Mi Carrito
-        </h2>
+
+    <!-- ===================================== -->
+    <!-- TOTAL -->
+    <!-- ===================================== -->
+
+    <section class="total-carrito">
 
 
-        <div
-            id="contenedorCarrito"
-            class="productos-grid"
+        <div id="totalCarrito"></div>
+
+
+        <button
+            class="btn-comprar"
+            onclick="comprarTodo()"
         >
 
-        </div>
+            Comprar Todo
+
+        </button>
+
+
+    </section>
 
 
 
-        <div class="total-carrito">
-
-
-            <h3>
-
-                Total:
-
-                <span id="totalCarrito">
-                    Q0
-                </span>
-
-            </h3>
-
-
-            <button onclick="comprarTodo()">
-                Comprar Todo
-            </button>
-
-
-        </div>
-
-
-    </main>
-
-
+    <!-- ===================================== -->
+    <!-- SCRIPTS -->
+    <!-- ===================================== -->
 
     <script src="app.js"></script>
 

@@ -11,7 +11,7 @@
     >
 
     <title>
-        Inventario
+        Inventario | TECHNOVA GT
     </title>
 
     <link
@@ -24,159 +24,58 @@
 <body>
 
 
-    <!-- HEADER -->
+    <!-- ===================================== -->
+    <!-- NAVBAR -->
+    <!-- ===================================== -->
 
-    <header class="header">
-
-
-        <h1>
-            TECHNOVA GT - INVENTARIO
-        </h1>
+    <nav class="navbar">
 
 
-        <nav>
+        <div class="logo">
+
+            TECHNOVA GT
+
+        </div>
+
+
+        <div class="links">
+
 
             <a href="index.html">
+
                 Inicio
+
             </a>
+
 
             <a href="admin.html">
-                Administrador
+
+                Admin
+
             </a>
+
 
             <a href="tienda.html">
+
                 Tienda
+
             </a>
+
+
+            <a href="carrito.html">
+
+                Carrito
+
+            </a>
+
+
+            <a href="historial.html">
+
+                Historial
+
+            </a>
+
 
             <a href="perfil.html">
-                Perfil
-            </a>
 
-            <button onclick="cerrarSesion()">
-                Cerrar Sesión
-            </button>
-
-        </nav>
-
-
-    </header>
-
-
-
-    <!-- CONTENIDO -->
-
-    <main class="container">
-
-
-        <h2>
-            Control de Inventario
-        </h2>
-
-
-        <!-- BUSCADOR -->
-
-        <div class="buscador-container">
-
-
-            <input
-                type="text"
-                id="buscarCategoria"
-                placeholder="Buscar categoría..."
-                onkeyup="filtrarCategoria()"
-            >
-
-
-        </div>
-
-
-
-        <!-- TABLA INVENTARIO -->
-
-        <div class="tabla-container">
-
-
-            <table class="tabla-inventario">
-
-
-                <thead>
-
-                    <tr>
-
-                        <th>
-                            ID
-                        </th>
-
-                        <th>
-                            Producto
-                        </th>
-
-                        <th>
-                            Categoría
-                        </th>
-
-                        <th>
-                            Precio
-                        </th>
-
-                        <th>
-                            Stock
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody id="tablaProductos">
-
-                </tbody>
-
-
-            </table>
-
-
-        </div>
-
-
-
-        <!-- RESUMEN -->
-
-        <div class="resumen-inventario">
-
-
-            <h3>
-
-                Productos Registrados:
-
-                <span id="totalProductos">
-                    0
-                </span>
-
-            </h3>
-
-
-            <h3>
-
-                Productos Sin Stock:
-
-                <span id="sinStock">
-                    0
-                </span>
-
-            </h3>
-
-
-        </div>
-
-
-    </main>
-
-
-
-    <script src="app.js"></script>
-
-    <script src="inventario.js"></script>
-
-</body>
-
-</html>
+               

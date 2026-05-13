@@ -1,132 +1,87 @@
-// ======================================
+// =====================================
 // VARIABLES
-// ======================================
+// =====================================
 
-let productosGlobal =
-    [];
-
+let productos = [];
 
 
-// ======================================
+
+// =====================================
 // INICIO
-// ======================================
+// =====================================
 
-window.onload = () => {
+window.onload = ()=>{
 
     verificarLogin();
 
-    mostrarLinksAdmin();
+    mostrarLinksAdmin(
+        "adminLinks"
+    );
 
-    cargarProductos();
+    obtenerProductos();
 
 };
 
 
 
-// ======================================
-// MOSTRAR LINKS ADMIN
-// ======================================
+// =====================================
+// OBTENER PRODUCTOS
+// =====================================
 
-function mostrarLinksAdmin() {
+async function obtenerProductos(){
 
-    const usuario =
-        obtenerUsuario();
+    try{
 
-
-    const adminLinks =
-        document.getElementById(
-            "adminLinks"
-        );
-
-
-    if (
-        usuario &&
-        usuario.rol === "admin"
-    ) {
-
-        adminLinks.innerHTML = `
-
-            <a href="admin.html">
-                Administrador
-            </a>
-
-            <a href="inventario.html">
-                Inventario
-            </a>
-
-        `;
-
-    }
-
-}
-
-
-
-// ======================================
-// CARGAR PRODUCTOS
-// ======================================
-
-async function cargarProductos() {
-
-    try {
 
         const respuesta =
-            await fetch(
+        await fetch(
 
-                `${API}/productos`
+            `${API}/productos`
 
-            );
-
-
-        const productos =
-            await respuesta.json();
-
-
-        productosGlobal =
-            productos;
-
-
-        mostrarProductos(
-            productos
         );
 
-    } catch (error) {
+
+        productos =
+        await respuesta.json();
+
+
+        mostrarProductos();
+
+
+    }catch(error){
 
         console.log(error);
 
-        alert(
-            "Error cargando productos"
-        );
-
     }
 
 }
 
 
 
-// ======================================
+// =====================================
 // MOSTRAR PRODUCTOS
-// ======================================
+// =====================================
 
-function mostrarProductos(productos) {
+function mostrarProductos(){
 
     const contenedor =
-        document.getElementById(
-            "contenedorProductos"
-        );
+    document.getElementById(
+        "contenedorProductos"
+    );
 
 
     contenedor.innerHTML =
-        "";
+    "";
 
 
-    if (productos.length === 0) {
+    // SIN PRODUCTOS
+    if(productos.length === 0){
 
         contenedor.innerHTML = `
 
-            <h3>
-                No hay productos disponibles
-            </h3>
+            <h2>
+                No hay productos
+            </h2>
 
         `;
 
@@ -135,7 +90,8 @@ function mostrarProductos(productos) {
     }
 
 
-    productos.forEach((producto) => {
+    // RECORRER PRODUCTOS
+    productos.forEach(producto=>{
 
 
         contenedor.innerHTML += `
@@ -149,71 +105,78 @@ function mostrarProductos(productos) {
                 >
 
 
-                <h3>
+                <h2>
+
                     ${producto.nombre}
-                </h3>
+
+                </h2>
 
 
                 <p>
+
                     Categoría:
                     ${producto.categoria}
+
                 </p>
 
 
                 <p>
+
                     Precio:
-                    Q${producto.precio}
+                    Q${Number(producto.precio).toFixed(2)}
+
                 </p>
 
 
                 <p>
 
-    Stock:
+                    Stock:
 
-    ${producto.cantidad <= 0
+                    ${
+                        producto.cantidad <= 0
 
-                ?
+                        ?
 
-                `<span class="sin-stock">
-            Agotado
-        </span>`
+                        `<span class="sin-stock">
+                            Agotado
+                        </span>`
 
-                :
+                        :
 
-                producto.cantidad
-            }
+                        producto.cantidad
+                    }
 
-</p>
+                </p>
 
 
                 ${
-                  producto.cantidad <= 0
+                    producto.cantidad <= 0
 
-                  ?
+                    ?
 
-                  `
+                    `
 
-                 <button disabled>
+                    <button disabled>
 
-                  Sin Stock
+                        Sin Stock
 
-                  </button>
+                    </button>
 
-                 `
+                    `
 
-                 :
+                    :
 
-                 `
+                    `
 
-                 <button
-                   onclick='agregarCarrito(
-                   ${JSON.stringify(producto)}
-                 )'
-                 >
-                 Agregar al Carrito
-                 </button>
+                    <button
+                        onclick='agregarCarrito(${JSON.stringify(producto)})'
+                    >
 
-                 `
+                        Agregar al Carrito
+
+                    </button>
+
+                    `
                 }
 
 
@@ -227,40 +190,62 @@ function mostrarProductos(productos) {
 
 
 
-// ======================================
-// AGREGAR AL CARRITO
-// ======================================
+// =====================================
+// AGREGAR CARRITO
+// =====================================
 
-function agregarCarrito(producto) {
+function agregarCarrito(producto){
 
-    let carrito =
-        JSON.parse(
+    let carrito = JSON.parse(
 
-            localStorage.getItem(
-                "carrito"
-            )
+        localStorage.getItem(
+            "carrito"
+        )
 
-        ) || [];
+    ) || [];
 
 
-    // BUSCAR SI EXISTE
+    // VALIDAR SI YA EXISTE
     const existe =
-        carrito.find((item) => {
+    carrito.find(
 
-            return item.id === producto.id;
+        p => p.id === producto.id
 
-        });
+    );
 
 
-    if (existe) {
+    if(existe){
+
+        // VALIDAR STOCK
+        if(
+            existe.cantidad >=
+            producto.cantidad
+        ){
+
+            alert(
+                "No hay más stock disponible"
+            );
+
+            return;
+
+        }
+
 
         existe.cantidad += 1;
 
-    } else {
+
+    }else{
+
 
         carrito.push({
 
-            ...producto,
+            id: producto.id,
+
+            nombre: producto.nombre,
+
+            precio: producto.precio,
+
+            imagen: producto.imagen,
 
             cantidad: 1
 
@@ -269,6 +254,7 @@ function agregarCarrito(producto) {
     }
 
 
+    // GUARDAR
     localStorage.setItem(
 
         "carrito",
@@ -280,47 +266,6 @@ function agregarCarrito(producto) {
 
     alert(
         "Producto agregado al carrito"
-    );
-
-}
-
-
-
-// ======================================
-// FILTRAR PRODUCTOS
-// ======================================
-
-function filtrarProductos() {
-
-    const texto =
-        document.getElementById(
-            "buscador"
-        ).value.toLowerCase();
-
-
-    const filtrados =
-        productosGlobal.filter((producto) => {
-
-
-            return (
-
-                producto.nombre
-                    .toLowerCase()
-                    .includes(texto)
-
-                ||
-
-                producto.categoria
-                    .toLowerCase()
-                    .includes(texto)
-
-            );
-
-        });
-
-
-    mostrarProductos(
-        filtrados
     );
 
 }

@@ -11,7 +11,7 @@
     >
 
     <title>
-        Iniciar Sesión
+        Login | TECHNOVA GT
     </title>
 
     <link
@@ -24,71 +24,47 @@
 <body>
 
 
-    <!-- HEADER -->
-
-    <header class="header">
-
-
-        <h1>
-            TECHNOVA GT
-        </h1>
-
-
-        <nav>
-
-            <a href="index.html">
-                Inicio
-            </a>
-
-            <a href="tienda.html">
-                Tienda
-            </a>
-
-            <a href="register.html">
-                Registrarse
-            </a>
-
-        </nav>
-
-
-    </header>
-
-
-
+    <!-- ===================================== -->
     <!-- LOGIN -->
+    <!-- ===================================== -->
 
-    <main class="container">
-
-
-        <div class="form-login">
+    <div class="container-form">
 
 
-            <h2>
+        <form
+            class="formulario"
+            onsubmit="login(event)"
+        >
+
+
+            <h1>
+
                 Iniciar Sesión
-            </h2>
 
+            </h1>
 
 
             <input
                 type="email"
                 id="correo"
-                placeholder="Correo electrónico"
+                placeholder="Correo"
+                required
             >
-
 
 
             <input
                 type="password"
                 id="password"
                 placeholder="Contraseña"
+                required
             >
 
 
+            <button type="submit">
 
-            <button onclick="login()">
                 Ingresar
-            </button>
 
+            </button>
 
 
             <p>
@@ -96,18 +72,24 @@
                 ¿No tienes cuenta?
 
                 <a href="register.html">
+
                     Registrarse
+
                 </a>
 
             </p>
 
 
-        </div>
+        </form>
 
 
-    </main>
+    </div>
 
 
+
+    <!-- ===================================== -->
+    <!-- SCRIPTS -->
+    <!-- ===================================== -->
 
     <script src="app.js"></script>
 

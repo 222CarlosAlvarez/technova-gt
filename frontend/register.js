@@ -1,6 +1,6 @@
-// ======================================
+// =====================================
 // MOSTRAR CLAVE ADMIN
-// ======================================
+// =====================================
 
 function mostrarClaveAdmin(){
 
@@ -10,20 +10,20 @@ function mostrarClaveAdmin(){
     ).value;
 
 
-    const div =
+    const claveAdmin =
     document.getElementById(
-        "divClaveAdmin"
+        "claveAdmin"
     );
 
 
     if(rol === "admin"){
 
-        div.style.display =
+        claveAdmin.style.display =
         "block";
 
     }else{
 
-        div.style.display =
+        claveAdmin.style.display =
         "none";
 
     }
@@ -32,11 +32,14 @@ function mostrarClaveAdmin(){
 
 
 
-// ======================================
-// REGISTER
-// ======================================
+// =====================================
+// REGISTRO
+// =====================================
 
-async function register(){
+async function register(event){
+
+    event.preventDefault();
+
 
     const nombre =
     document.getElementById(
@@ -68,38 +71,8 @@ async function register(){
     ).value;
 
 
-    // VALIDAR
-    if(
-        !nombre ||
-        !correo ||
-        !password
-    ){
-
-        alert(
-            "Completa todos los campos"
-        );
-
-        return;
-
-    }
-
-
-    // VALIDAR CLAVE ADMIN
-    if(
-        rol === "admin" &&
-        !claveAdmin
-    ){
-
-        alert(
-            "Ingresa clave administrador"
-        );
-
-        return;
-
-    }
-
-
     try{
+
 
         const respuesta =
         await fetch(
@@ -151,6 +124,7 @@ async function register(){
         );
 
 
+        // REDIRECCION
         window.location.href =
         "login.html";
 
@@ -160,7 +134,7 @@ async function register(){
         console.log(error);
 
         alert(
-            "Error conexión servidor"
+            "Error registrando usuario"
         );
 
     }

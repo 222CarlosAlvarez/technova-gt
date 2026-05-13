@@ -1,33 +1,64 @@
-// ======================================
+// =====================================
 // VARIABLES
-// ======================================
+// =====================================
 
-let productosGlobal =
-[];
+let productos = [];
+
+let editando = false;
+
+let productoEditando = null;
 
 
 
-// ======================================
+// =====================================
 // INICIO
-// ======================================
+// =====================================
 
 window.onload = ()=>{
 
     verificarAdmin();
 
-    cargarInventario();
+    obtenerProductos();
 
 };
 
 
 
-// ======================================
-// CARGAR INVENTARIO
-// ======================================
+// =====================================
+// VERIFICAR ADMIN
+// =====================================
 
-async function cargarInventario(){
+function verificarAdmin(){
+
+    const usuario =
+    obtenerUsuario();
+
+
+    if(
+
+        !usuario ||
+
+        usuario.rol !== "admin"
+
+    ){
+
+        window.location.href =
+        "index.html";
+
+    }
+
+}
+
+
+
+// =====================================
+// OBTENER PRODUCTOS
+// =====================================
+
+async function obtenerProductos(){
 
     try{
+
 
         const respuesta =
         await fetch(
@@ -37,30 +68,16 @@ async function cargarInventario(){
         );
 
 
-        const productos =
+        productos =
         await respuesta.json();
 
 
-        productosGlobal =
-        productos;
+        mostrarProductos();
 
-
-        mostrarProductos(
-            productos
-        );
-
-
-        actualizarResumen(
-            productos
-        );
 
     }catch(error){
 
         console.log(error);
-
-        alert(
-            "Error cargando inventario"
-        );
 
     }
 
@@ -68,51 +85,79 @@ async function cargarInventario(){
 
 
 
-// ======================================
+// =====================================
 // MOSTRAR PRODUCTOS
-// ======================================
+// =====================================
 
-function mostrarProductos(productos){
+function mostrarProductos(){
 
-    const tabla =
+    const contenedor =
     document.getElementById(
-        "tablaProductos"
+        "contenedorInventario"
     );
 
 
-    tabla.innerHTML =
+    contenedor.innerHTML =
     "";
 
 
-    productos.forEach((producto)=>{
+    // SIN PRODUCTOS
+    if(productos.length === 0){
+
+        contenedor.innerHTML = `
+
+            <h2>
+                No hay productos
+            </h2>
+
+        `;
+
+        return;
+
+    }
 
 
-        tabla.innerHTML += `
-
-            <tr>
-
-
-                <td>
-                    ${producto.id}
-                </td>
+    // RECORRER PRODUCTOS
+    productos.forEach(producto=>{
 
 
-                <td>
+        contenedor.innerHTML += `
+
+            <div class="card-producto">
+
+
+                <img
+                    src="${producto.imagen}"
+                    alt="${producto.nombre}"
+                >
+
+
+                <h2>
+
                     ${producto.nombre}
-                </td>
+
+                </h2>
 
 
-                <td>
+                <p>
+
+                    Categoría:
                     ${producto.categoria}
-                </td>
+
+                </p>
 
 
-                <td>
-                    Q${producto.precio}
-                </td>
+                <p>
+
+                    Precio:
+                    Q${Number(producto.precio).toFixed(2)}
+
+                </p>
 
 
-                <td>
+                <p>
+
+                    Stock:
 
                     ${
                         producto.cantidad <= 0
@@ -120,7 +165,7 @@ function mostrarProductos(productos){
                         ?
 
                         `<span class="sin-stock">
-                            Sin Stock
+                            Agotado
                         </span>`
 
                         :
@@ -128,10 +173,36 @@ function mostrarProductos(productos){
                         producto.cantidad
                     }
 
-                </td>
+                </p>
 
 
-            </tr>
+                <div class="acciones-producto">
+
+
+                    <button
+                        class="btn-editar"
+                        onclick='editarProducto(${JSON.stringify(producto)})'
+                    >
+
+                        Editar
+
+                    </button>
+
+
+                    <button
+                        class="btn-eliminar"
+                        onclick="eliminarProducto(${producto.id})"
+                    >
+
+                        Eliminar
+
+                    </button>
+
+
+                </div>
+
+
+            </div>
 
         `;
 
@@ -141,65 +212,324 @@ function mostrarProductos(productos){
 
 
 
-// ======================================
-// FILTRAR CATEGORIA
-// ======================================
+// =====================================
+// AGREGAR PRODUCTO
+// =====================================
 
-function filtrarCategoria(){
+async function agregarProducto(event){
 
-    const texto =
+    event.preventDefault();
+
+
+    const nombre =
     document.getElementById(
-        "buscarCategoria"
-    ).value.toLowerCase();
+        "nombre"
+    ).value;
 
 
-    const filtrados =
-    productosGlobal.filter((producto)=>{
+    const precio =
+    document.getElementById(
+        "precio"
+    ).value;
 
 
-        return producto.categoria
-        .toLowerCase()
-        .includes(texto);
-
-    });
-
-
-    mostrarProductos(
-        filtrados
-    );
+    const cantidad =
+    document.getElementById(
+        "cantidad"
+    ).value;
 
 
-    actualizarResumen(
-        filtrados
-    );
+    const categoria =
+    document.getElementById(
+        "categoria"
+    ).value;
+
+
+    const imagen =
+    document.getElementById(
+        "imagen"
+    ).value;
+
+
+    try{
+
+
+        // =====================================
+        // EDITAR
+        // =====================================
+
+        if(editando){
+
+
+            const respuesta =
+            await fetch(
+
+                `${API}/productos/${productoEditando.id}`,
+
+                {
+
+                    method:"PUT",
+
+                    headers:{
+                        "Content-Type":
+                        "application/json"
+                    },
+
+                    body:JSON.stringify({
+
+                        nombre,
+                        precio,
+                        cantidad,
+                        categoria,
+                        imagen
+
+                    })
+
+                }
+
+            );
+
+
+            const datos =
+            await respuesta.json();
+
+
+            if(!respuesta.ok){
+
+                alert(
+                    datos.mensaje
+                );
+
+                return;
+
+            }
+
+
+            alert(
+                "Producto actualizado"
+            );
+
+
+            editando = false;
+
+            productoEditando = null;
+
+
+            document.getElementById(
+                "btnGuardar"
+            ).innerText =
+            "Agregar Producto";
+
+
+        }else{
+
+
+            // =====================================
+            // AGREGAR
+            // =====================================
+
+            const respuesta =
+            await fetch(
+
+                `${API}/productos`,
+
+                {
+
+                    method:"POST",
+
+                    headers:{
+                        "Content-Type":
+                        "application/json"
+                    },
+
+                    body:JSON.stringify({
+
+                        nombre,
+                        precio,
+                        cantidad,
+                        categoria,
+                        imagen
+
+                    })
+
+                }
+
+            );
+
+
+            const datos =
+            await respuesta.json();
+
+
+            if(!respuesta.ok){
+
+                alert(
+                    datos.mensaje
+                );
+
+                return;
+
+            }
+
+
+            alert(
+                "Producto agregado"
+            );
+
+        }
+
+
+        // LIMPIAR
+        document.getElementById(
+            "formProducto"
+        ).reset();
+
+
+        obtenerProductos();
+
+
+    }catch(error){
+
+        console.log(error);
+
+        alert(
+            "Error guardando producto"
+        );
+
+    }
 
 }
 
 
 
-// ======================================
-// ACTUALIZAR RESUMEN
-// ======================================
+// =====================================
+// EDITAR PRODUCTO
+// =====================================
 
-function actualizarResumen(productos){
+function editarProducto(producto){
+
+    editando = true;
+
+    productoEditando = producto;
+
 
     document.getElementById(
-        "totalProductos"
+        "nombre"
+    ).value =
+    producto.nombre;
+
+
+    document.getElementById(
+        "precio"
+    ).value =
+    producto.precio;
+
+
+    document.getElementById(
+        "cantidad"
+    ).value =
+    producto.cantidad;
+
+
+    document.getElementById(
+        "categoria"
+    ).value =
+    producto.categoria;
+
+
+    document.getElementById(
+        "imagen"
+    ).value =
+    producto.imagen;
+
+
+    document.getElementById(
+        "btnGuardar"
     ).innerText =
-    productos.length;
+    "Actualizar Producto";
 
 
-    const sinStock =
-    productos.filter((p)=>{
+    window.scrollTo({
 
-        return p.cantidad <= 0;
+        top:0,
+
+        behavior:"smooth"
 
     });
 
+}
 
-    document.getElementById(
-        "sinStock"
-    ).innerText =
-    sinStock.length;
+
+
+// =====================================
+// ELIMINAR PRODUCTO
+// =====================================
+
+async function eliminarProducto(id){
+
+    const confirmar =
+    confirm(
+
+        "¿Eliminar producto?"
+
+    );
+
+
+    if(!confirmar){
+
+        return;
+
+    }
+
+
+    try{
+
+
+        const respuesta =
+        await fetch(
+
+            `${API}/productos/${id}`,
+
+            {
+
+                method:"DELETE"
+
+            }
+
+        );
+
+
+        const datos =
+        await respuesta.json();
+
+
+        if(!respuesta.ok){
+
+            alert(
+                datos.mensaje
+            );
+
+            return;
+
+        }
+
+
+        alert(
+            "Producto eliminado"
+        );
+
+
+        obtenerProductos();
+
+
+    }catch(error){
+
+        console.log(error);
+
+        alert(
+            "Error eliminando producto"
+        );
+
+    }
 
 }

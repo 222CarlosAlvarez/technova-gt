@@ -11,7 +11,7 @@
     >
 
     <title>
-        Registro
+        Registro | TECHNOVA GT
     </title>
 
     <link
@@ -24,117 +24,83 @@
 <body>
 
 
-    <!-- HEADER -->
+    <!-- ===================================== -->
+    <!-- REGISTRO -->
+    <!-- ===================================== -->
 
-    <header class="header">
-
-
-        <h1>
-            TECHNOVA GT
-        </h1>
+    <div class="container-form">
 
 
-        <nav>
-
-            <a href="index.html">
-                Inicio
-            </a>
-
-            <a href="tienda.html">
-                Tienda
-            </a>
-
-            <a href="login.html">
-                Iniciar Sesión
-            </a>
-
-        </nav>
+        <form
+            class="formulario"
+            onsubmit="register(event)"
+        >
 
 
-    </header>
+            <h1>
 
-
-
-    <!-- FORMULARIO -->
-
-    <main class="container">
-
-
-        <div class="form-login">
-
-
-            <h2>
                 Crear Cuenta
-            </h2>
 
+            </h1>
 
 
             <input
                 type="text"
                 id="nombre"
                 placeholder="Nombre completo"
+                required
             >
-
 
 
             <input
                 type="email"
                 id="correo"
                 placeholder="Correo electrónico"
+                required
             >
-
 
 
             <input
                 type="password"
                 id="password"
                 placeholder="Contraseña"
+                required
             >
 
-
-
-            <!-- ROL -->
 
             <select
                 id="rol"
                 onchange="mostrarClaveAdmin()"
             >
 
-                <option value="usuario">
+                <option value="user">
+
                     Usuario
+
                 </option>
 
                 <option value="admin">
+
                     Administrador
+
                 </option>
 
             </select>
 
 
-
-            <!-- CLAVE ADMIN -->
-
-            <div
-                id="divClaveAdmin"
+            <input
+                type="password"
+                id="claveAdmin"
+                placeholder="Clave Administrador"
                 style="display:none;"
             >
 
 
-                <input
-                    type="password"
-                    id="claveAdmin"
-                    placeholder="Clave Administrador"
-                >
+            <button type="submit">
 
-
-            </div>
-
-
-
-            <button onclick="register()">
                 Registrarse
-            </button>
 
+            </button>
 
 
             <p>
@@ -142,18 +108,24 @@
                 ¿Ya tienes cuenta?
 
                 <a href="login.html">
+
                     Iniciar Sesión
+
                 </a>
 
             </p>
 
 
-        </div>
+        </form>
 
 
-    </main>
+    </div>
 
 
+
+    <!-- ===================================== -->
+    <!-- SCRIPTS -->
+    <!-- ===================================== -->
 
     <script src="app.js"></script>
 

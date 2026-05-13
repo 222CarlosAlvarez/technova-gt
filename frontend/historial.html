@@ -11,7 +11,7 @@
     >
 
     <title>
-        Historial de Compras
+        Historial | TECHNOVA GT
     </title>
 
     <link
@@ -24,66 +24,105 @@
 <body>
 
 
-    <!-- HEADER -->
+    <!-- ===================================== -->
+    <!-- NAVBAR -->
+    <!-- ===================================== -->
 
-    <header class="header">
+    <nav class="navbar">
 
 
-        <h1>
+        <div class="logo">
+
             TECHNOVA GT
-        </h1>
-
-
-        <nav>
-
-            <a href="index.html">
-                Inicio
-            </a>
-
-            <a href="tienda.html">
-                Tienda
-            </a>
-
-            <a href="carrito.html">
-                Carrito
-            </a>
-
-            <a href="perfil.html">
-                Perfil
-            </a>
-
-            <button onclick="cerrarSesion()">
-                Cerrar Sesión
-            </button>
-
-        </nav>
-
-
-    </header>
-
-
-
-    <!-- CONTENIDO -->
-
-    <main class="container">
-
-
-        <h2>
-            Historial de Compras
-        </h2>
-
-
-        <div
-            id="contenedorHistorial"
-            class="productos-grid"
-        >
 
         </div>
 
 
-    </main>
+        <div class="links">
 
 
+            <a href="index.html">
+
+                Inicio
+
+            </a>
+
+
+            <a href="tienda.html">
+
+                Tienda
+
+            </a>
+
+
+            <a href="carrito.html">
+
+                Carrito
+
+            </a>
+
+
+            <a href="perfil.html">
+
+                Perfil
+
+            </a>
+
+
+            <div id="adminLinks"></div>
+
+
+            <a
+                href="#"
+                onclick="logout()"
+            >
+
+                Cerrar Sesión
+
+            </a>
+
+
+        </div>
+
+
+    </nav>
+
+
+
+    <!-- ===================================== -->
+    <!-- TITULO -->
+    <!-- ===================================== -->
+
+    <section class="titulo-pagina">
+
+
+        <h1>
+
+            Historial de Compras
+
+        </h1>
+
+
+    </section>
+
+
+
+    <!-- ===================================== -->
+    <!-- HISTORIAL -->
+    <!-- ===================================== -->
+
+    <section
+        class="contenedor-historial"
+        id="contenedorHistorial"
+    >
+
+    </section>
+
+
+
+    <!-- ===================================== -->
+    <!-- SCRIPTS -->
+    <!-- ===================================== -->
 
     <script src="app.js"></script>
 

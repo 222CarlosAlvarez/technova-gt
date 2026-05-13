@@ -24,297 +24,213 @@
 <body>
 
 
-    <!-- HEADER -->
+    <!-- ===================================== -->
+    <!-- NAVBAR -->
+    <!-- ===================================== -->
 
-    <header class="header">
+    <nav class="navbar">
 
 
-        <h1>
+        <div class="logo">
+
             TECHNOVA GT
-        </h1>
+
+        </div>
 
 
-        <nav id="navPrincipal">
+        <div class="links">
 
 
             <a href="index.html">
+
                 Inicio
+
             </a>
 
 
             <a href="tienda.html">
+
                 Tienda
+
             </a>
 
 
             <a href="carrito.html">
+
                 Carrito
+
             </a>
 
 
             <a href="historial.html">
+
                 Historial
+
             </a>
 
 
             <a href="perfil.html">
+
                 Perfil
+
             </a>
 
 
-            <span id="adminLinks">
-
-            </span>
+            <div id="adminLinks"></div>
 
 
-            <span id="authLinks">
+            <a
+                href="#"
+                onclick="logout()"
+            >
+
+                Cerrar Sesión
+
+            </a>
 
 
-                <a href="login.html">
-                    Iniciar Sesión
-                </a>
+        </div>
 
 
-                <a href="register.html">
-                    Registrarse
-                </a>
-
-
-            </span>
-
-
-        </nav>
-
-
-    </header>
+    </nav>
 
 
 
+    <!-- ===================================== -->
     <!-- HERO -->
+    <!-- ===================================== -->
 
     <section class="hero">
 
 
-        <h2>
-            Bienvenido a TECHNOVA GT
-        </h2>
+        <div class="hero-contenido">
 
 
-        <p>
-            Tecnología, componentes y accesorios
-            al mejor precio.
-        </p>
+            <h1>
+
+                Bienvenido a
+                TECHNOVA GT
+
+            </h1>
 
 
-        <a
-            href="tienda.html"
-            class="btn-principal"
-        >
-            Ir a la Tienda
-        </a>
+            <p>
+
+                Tu tienda tecnológica
+                favorita en Guatemala
+
+            </p>
+
+
+            <a
+                href="tienda.html"
+                class="btn"
+            >
+
+                Ir a la Tienda
+
+            </a>
+
+
+        </div>
 
 
     </section>
 
 
 
-    <!-- PRODUCTOS DESTACADOS -->
+    <!-- ===================================== -->
+    <!-- CARACTERISTICAS -->
+    <!-- ===================================== -->
 
-    <main class="container">
-
-
-        <h2>
-            Productos Destacados
-        </h2>
+    <section class="features">
 
 
-        <div
-            id="productosDestacados"
-            class="productos-grid"
-        >
+        <div class="feature-card">
+
+            <h2>
+
+                Tecnología Premium
+
+            </h2>
+
+            <p>
+
+                Productos modernos y
+                de alta calidad
+
+            </p>
 
         </div>
 
 
-    </main>
+        <div class="feature-card">
+
+            <h2>
+
+                Seguridad
+
+            </h2>
+
+            <p>
+
+                Compras seguras y rápidas
+
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <h2>
+
+                Soporte
+
+            </h2>
+
+            <p>
+
+                Atención personalizada
+
+            </p>
+
+        </div>
+
+
+    </section>
 
 
 
+    <!-- ===================================== -->
     <!-- FOOTER -->
+    <!-- ===================================== -->
 
     <footer class="footer">
 
-
         <p>
-            © 2026 TECHNOVA GT
-        </p>
 
+            © 2026 TECHNOVA GT
+
+        </p>
 
     </footer>
 
 
 
-    <script src="app.js"></script>
+    <!-- ===================================== -->
+    <!-- SCRIPTS -->
+    <!-- ===================================== -->
 
+    <script src="app.js"></script>
 
     <script>
 
-
-        // ======================================
-        // CARGAR PRODUCTOS
-        // ======================================
-
-        async function cargarProductos(){
-
-
-            try{
-
-                const respuesta =
-                await fetch(
-
-                    `${API}/productos`
-
-                );
-
-
-                const productos =
-                await respuesta.json();
-
-
-                const contenedor =
-                document.getElementById(
-                    "productosDestacados"
-                );
-
-
-                contenedor.innerHTML =
-                "";
-
-
-                productos.slice(0,6).forEach((producto)=>{
-
-
-                    contenedor.innerHTML += `
-
-                        <div class="card-producto">
-
-
-                            <img
-                                src="${producto.imagen}"
-                                alt="${producto.nombre}"
-                            >
-
-
-                            <h3>
-                                ${producto.nombre}
-                            </h3>
-
-
-                            <p>
-                                Categoría:
-                                ${producto.categoria}
-                            </p>
-
-
-                            <p>
-                                Precio:
-                                Q${producto.precio}
-                            </p>
-
-
-                            <a
-                                href="tienda.html"
-                            >
-                                <button>
-                                    Ver Producto
-                                </button>
-                            </a>
-
-
-                        </div>
-
-                    `;
-
-                });
-
-            }catch(error){
-
-                console.log(error);
-
-            }
-
-        }
-
-
-
-        // ======================================
-        // MOSTRAR LINKS SEGÚN LOGIN
-        // ======================================
-
-        function mostrarSesion(){
-
-
-            const usuario =
-            obtenerUsuario();
-
-
-            const authLinks =
-            document.getElementById(
-                "authLinks"
-            );
-
-
-            const adminLinks =
-            document.getElementById(
-                "adminLinks"
-            );
-
-
-            if(usuario){
-
-
-                authLinks.innerHTML = `
-
-                    <button onclick="cerrarSesion()">
-                        Cerrar Sesión
-                    </button>
-
-                `;
-
-
-                // ADMIN
-                if(usuario.rol === "admin"){
-
-
-                    adminLinks.innerHTML = `
-
-                        <a href="admin.html">
-                            Administrador
-                        </a>
-
-
-                        <a href="inventario.html">
-                            Inventario
-                        </a>
-
-                    `;
-
-                }
-
-            }
-
-        }
-
-
-
-        // ======================================
-        // INICIO
-        // ======================================
-
-        cargarProductos();
-
-        mostrarSesion();
-
+        verificarLogin();
+
+        mostrarLinksAdmin(
+            "adminLinks"
+        );
 
     </script>
 

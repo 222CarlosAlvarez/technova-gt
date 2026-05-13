@@ -11,7 +11,7 @@
     >
 
     <title>
-        Tienda
+        Tienda | TECHNOVA GT
     </title>
 
     <link
@@ -24,100 +24,112 @@
 <body>
 
 
-    <!-- HEADER -->
+    <!-- ===================================== -->
+    <!-- NAVBAR -->
+    <!-- ===================================== -->
 
-    <header class="header">
+    <nav class="navbar">
 
 
-        <h1>
+        <div class="logo">
+
             TECHNOVA GT
-        </h1>
+
+        </div>
 
 
-        <nav id="navTienda">
+        <div class="links">
 
 
             <a href="index.html">
+
                 Inicio
+
             </a>
 
 
             <a href="carrito.html">
+
                 Carrito
-            </a>
 
-
-            <a href="perfil.html">
-                Perfil
             </a>
 
 
             <a href="historial.html">
+
                 Historial
+
             </a>
 
 
-            <span id="adminLinks">
+            <a href="perfil.html">
 
-            </span>
+                Perfil
 
-
-            <button onclick="cerrarSesion()">
-                Cerrar Sesión
-            </button>
+            </a>
 
 
-        </nav>
+            <div id="adminLinks"></div>
 
 
-    </header>
-
-
-
-    <!-- BUSCADOR -->
-
-    <section class="container">
-
-
-        <div class="buscador-container">
-
-
-            <input
-                type="text"
-                id="buscador"
-                placeholder="Buscar productos..."
-                onkeyup="filtrarProductos()"
+            <a
+                href="#"
+                onclick="logout()"
             >
+
+                Cerrar Sesión
+
+            </a>
 
 
         </div>
+
+
+    </nav>
+
+
+
+    <!-- ===================================== -->
+    <!-- TITULO -->
+    <!-- ===================================== -->
+
+    <section class="titulo-pagina">
+
+
+        <h1>
+
+            Tienda Tecnológica
+
+        </h1>
+
+
+        <p>
+
+            Explora nuestros productos
+
+        </p>
 
 
     </section>
 
 
 
+    <!-- ===================================== -->
     <!-- PRODUCTOS -->
+    <!-- ===================================== -->
 
-    <main class="container">
+    <section
+        class="contenedor-productos"
+        id="contenedorProductos"
+    >
 
-
-        <h2>
-            Productos Disponibles
-        </h2>
-
-
-        <div
-            id="contenedorProductos"
-            class="productos-grid"
-        >
-
-        </div>
+    </section>
 
 
-    </main>
 
-
+    <!-- ===================================== -->
+    <!-- SCRIPTS -->
+    <!-- ===================================== -->
 
     <script src="app.js"></script>
 
