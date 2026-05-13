@@ -1,111 +1,55 @@
-const express =
-require("express");
+const express = require("express");
+const sqlite3 = require("sqlite3").verbose();
+const bcrypt = require("bcrypt");
+const cors = require("cors");
+const path = require("path");
 
-const sqlite3 =
-require("sqlite3").verbose();
+const app = express();
 
-const bcrypt =
-require("bcrypt");
-
-const cors =
-require("cors");
+const PORT = process.env.PORT || 3000;
 
 
 
-// ======================================
-// APP
-// ======================================
-
-const app =
-express();
-
-const PORT =
-process.env.PORT || 3000;
-
-
-
-// ======================================
-// CORS
-// ======================================
-
-app.use(
-
-    cors({
-
-        origin:"*",
-
-        methods:[
-            "GET",
-            "POST",
-            "PUT",
-            "DELETE",
-            "OPTIONS"
-        ],
-
-        allowedHeaders:[
-            "Content-Type",
-            "Authorization"
-        ]
-
-    })
-
-);
-
-
-
-// ======================================
+// =====================================
 // MIDDLEWARES
-// ======================================
+// =====================================
+
+app.use(cors());
 
 app.use(express.json());
 
-app.use(
-
-    express.urlencoded({
-
-        extended:true
-
-    })
-
-);
+app.use(express.urlencoded({ extended: true }));
 
 
 
-// ======================================
+// =====================================
 // DATABASE
-// ======================================
+// =====================================
 
-const db =
-new sqlite3.Database(
-
+const db = new sqlite3.Database(
     "./database.db",
+    (err) => {
 
-    (err)=>{
-
-        if(err){
+        if (err) {
 
             console.log(err);
 
-        }else{
+        } else {
 
-            console.log(
-                "SQLite conectado"
-            );
+            console.log("SQLite conectado");
 
         }
 
     }
-
 );
 
 
 
-// ======================================
+// =====================================
 // CREAR TABLAS
-// ======================================
+// =====================================
 
-db.serialize(()=>{
-
+db.serialize(() => {
 
     // USUARIOS
     db.run(`
@@ -114,18 +58,17 @@ db.serialize(()=>{
 
             id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-            nombre TEXT,
+            nombre TEXT NOT NULL,
 
-            correo TEXT UNIQUE,
+            correo TEXT UNIQUE NOT NULL,
 
-            password TEXT,
+            password TEXT NOT NULL,
 
-            rol TEXT
+            rol TEXT NOT NULL
 
         )
 
     `);
-
 
 
     // PRODUCTOS
@@ -135,20 +78,19 @@ db.serialize(()=>{
 
             id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-            nombre TEXT,
+            nombre TEXT NOT NULL,
 
-            precio REAL,
+            precio REAL NOT NULL,
 
-            cantidad INTEGER,
+            cantidad INTEGER NOT NULL,
 
-            categoria TEXT,
+            categoria TEXT NOT NULL,
 
             imagen TEXT
 
         )
 
     `);
-
 
 
     // COMPRAS
@@ -184,16 +126,15 @@ db.serialize(()=>{
 
 
 
-// ======================================
+// =====================================
 // RUTA PRINCIPAL
-// ======================================
+// =====================================
 
-app.get("/",(req,res)=>{
+app.get("/", (req, res) => {
 
     res.json({
 
-        mensaje:
-        "API TECHNOVA funcionando"
+        mensaje: "API TECHNOVA funcionando"
 
     });
 
@@ -201,119 +142,193 @@ app.get("/",(req,res)=>{
 
 
 
-// ======================================
-// OBTENER PRODUCTOS
-// ======================================
+// =====================================
+// REGISTER
+// =====================================
 
-app.get("/productos",(req,res)=>{
+app.post("/register", async (req, res) => {
 
-    db.all(
+    try {
 
-        `
-        SELECT *
-        FROM productos
-        ORDER BY id DESC
-        `,
+        const {
+            nombre,
+            correo,
+            password,
+            rol,
+            claveAdmin
+        } = req.body;
 
-        [],
 
-        (err,rows)=>{
+        if (
+            !nombre ||
+            !correo ||
+            !password ||
+            !rol
+        ) {
 
-            if(err){
+            return res.status(400).json({
 
-                return res.status(500).json({
+                mensaje: "Completa todos los campos"
 
-                    error:err.message
+            });
+
+        }
+
+
+        // VALIDAR ADMIN
+        if (rol === "admin") {
+
+            if (claveAdmin !== "123456") {
+
+                return res.status(401).json({
+
+                    mensaje: "Clave administrador incorrecta"
 
                 });
 
             }
 
-            res.json(rows);
-
         }
 
-    );
 
-});
-
-
-
-// ======================================
-// AGREGAR PRODUCTO
-// ======================================
-
-app.post("/productos",(req,res)=>{
-
-    const {
-
-        nombre,
-        precio,
-        cantidad,
-        categoria,
-        imagen
-
-    } = req.body;
+        const passwordHash =
+            await bcrypt.hash(password, 10);
 
 
-    // VALIDAR
-    if(
-        !nombre ||
-        !precio ||
-        !cantidad ||
-        !categoria
-    ){
+        db.run(
 
-        return res.status(400).json({
+            `
+            INSERT INTO usuarios(
+                nombre,
+                correo,
+                password,
+                rol
+            )
+            VALUES(?,?,?,?)
+            `,
 
-            mensaje:
-            "Completa todos los campos"
+            [
+                nombre,
+                correo,
+                passwordHash,
+                rol
+            ],
+
+            function (err) {
+
+                if (err) {
+
+                    return res.status(500).json({
+
+                        mensaje: "Correo ya registrado"
+
+                    });
+
+                }
+
+
+                res.json({
+
+                    mensaje: "Usuario registrado"
+
+                });
+
+            }
+
+        );
+
+    } catch (error) {
+
+        res.status(500).json({
+
+            mensaje: "Error servidor"
 
         });
 
     }
 
+});
 
-    db.run(
+
+
+// =====================================
+// LOGIN
+// =====================================
+
+app.post("/login", (req, res) => {
+
+    const {
+        correo,
+        password
+    } = req.body;
+
+
+    db.get(
 
         `
-        INSERT INTO productos
-        (
-            nombre,
-            precio,
-            cantidad,
-            categoria,
-            imagen
-        )
-        VALUES(?,?,?,?,?)
+        SELECT * FROM usuarios
+        WHERE correo = ?
         `,
 
-        [
+        [correo],
 
-            nombre,
-            precio,
-            cantidad,
-            categoria,
-            imagen
+        async (err, usuario) => {
 
-        ],
-
-        function(err){
-
-            if(err){
+            if (err) {
 
                 return res.status(500).json({
 
-                    error:err.message
+                    mensaje: "Error servidor"
 
                 });
 
             }
 
+
+            if (!usuario) {
+
+                return res.status(404).json({
+
+                    mensaje: "Usuario no encontrado"
+
+                });
+
+            }
+
+
+            const valido =
+                await bcrypt.compare(
+                    password,
+                    usuario.password
+                );
+
+
+            if (!valido) {
+
+                return res.status(401).json({
+
+                    mensaje: "Contraseña incorrecta"
+
+                });
+
+            }
+
+
             res.json({
 
-                mensaje:
-                "Producto agregado"
+                mensaje: "Login correcto",
+
+                usuario: {
+
+                    id: usuario.id,
+
+                    nombre: usuario.nombre,
+
+                    correo: usuario.correo,
+
+                    rol: usuario.rol
+
+                }
 
             });
 
@@ -325,23 +340,139 @@ app.post("/productos",(req,res)=>{
 
 
 
-// ======================================
-// EDITAR PRODUCTO
-// ======================================
+// =====================================
+// OBTENER PRODUCTOS
+// =====================================
 
-app.put("/productos/:id",(req,res)=>{
+app.get("/productos", (req, res) => {
 
-    const id =
-    req.params.id;
+    db.all(
+
+        `
+        SELECT *
+        FROM productos
+        ORDER BY id DESC
+        `,
+
+        [],
+
+        (err, productos) => {
+
+            if (err) {
+
+                return res.status(500).json({
+
+                    mensaje: "Error obteniendo productos"
+
+                });
+
+            }
+
+
+            res.json(productos);
+
+        }
+
+    );
+
+});
+
+
+
+// =====================================
+// AGREGAR PRODUCTO
+// =====================================
+
+app.post("/productos", (req, res) => {
 
     const {
-
         nombre,
         precio,
         cantidad,
         categoria,
         imagen
+    } = req.body;
 
+
+    if (
+        !nombre ||
+        !precio ||
+        !cantidad ||
+        !categoria
+    ) {
+
+        return res.status(400).json({
+
+            mensaje: "Completa todos los campos"
+
+        });
+
+    }
+
+
+    db.run(
+
+        `
+        INSERT INTO productos(
+            nombre,
+            precio,
+            cantidad,
+            categoria,
+            imagen
+        )
+        VALUES(?,?,?,?,?)
+        `,
+
+        [
+            nombre,
+            precio,
+            cantidad,
+            categoria,
+            imagen
+        ],
+
+        function (err) {
+
+            if (err) {
+
+                return res.status(500).json({
+
+                    mensaje: "Error agregando producto"
+
+                });
+
+            }
+
+
+            res.json({
+
+                mensaje: "Producto agregado"
+
+            });
+
+        }
+
+    );
+
+});
+
+
+
+// =====================================
+// EDITAR PRODUCTO
+// =====================================
+
+app.put("/productos/:id", (req, res) => {
+
+    const id = req.params.id;
+
+
+    const {
+        nombre,
+        precio,
+        cantidad,
+        categoria,
+        imagen
     } = req.body;
 
 
@@ -361,32 +492,30 @@ app.put("/productos/:id",(req,res)=>{
         `,
 
         [
-
             nombre,
             precio,
             cantidad,
             categoria,
             imagen,
             id
-
         ],
 
-        function(err){
+        function (err) {
 
-            if(err){
+            if (err) {
 
                 return res.status(500).json({
 
-                    error:err.message
+                    mensaje: "Error actualizando producto"
 
                 });
 
             }
 
+
             res.json({
 
-                mensaje:
-                "Producto actualizado"
+                mensaje: "Producto actualizado"
 
             });
 
@@ -398,14 +527,13 @@ app.put("/productos/:id",(req,res)=>{
 
 
 
-// ======================================
+// =====================================
 // ELIMINAR PRODUCTO
-// ======================================
+// =====================================
 
-app.delete("/productos/:id",(req,res)=>{
+app.delete("/productos/:id", (req, res) => {
 
-    const id =
-    req.params.id;
+    const id = req.params.id;
 
 
     db.run(
@@ -417,22 +545,22 @@ app.delete("/productos/:id",(req,res)=>{
 
         [id],
 
-        function(err){
+        function (err) {
 
-            if(err){
+            if (err) {
 
                 return res.status(500).json({
 
-                    error:err.message
+                    mensaje: "Error eliminando producto"
 
                 });
 
             }
 
+
             res.json({
 
-                mensaje:
-                "Producto eliminado"
+                mensaje: "Producto eliminado"
 
             });
 
@@ -444,227 +572,22 @@ app.delete("/productos/:id",(req,res)=>{
 
 
 
-// ======================================
-// REGISTER
-// ======================================
+// =====================================
+// REALIZAR COMPRA
+// =====================================
 
-app.post("/register",(req,res)=>{
-
-    const {
-
-        nombre,
-        correo,
-        password,
-        rol,
-        claveAdmin
-
-    } = req.body;
-
-
-    // VALIDAR
-    if(
-        !nombre ||
-        !correo ||
-        !password ||
-        !rol
-    ){
-
-        return res.status(400).json({
-
-            mensaje:
-            "Completa todos los campos"
-
-        });
-
-    }
-
-
-    // VALIDAR ADMIN
-    if(rol === "admin"){
-
-        if(claveAdmin !== "123456"){
-
-            return res.status(401).json({
-
-                mensaje:
-                "Clave administrador incorrecta"
-
-            });
-
-        }
-
-    }
-
-
-    // HASH PASSWORD
-    const passwordHash =
-    bcrypt.hashSync(password,10);
-
-
-    db.run(
-
-        `
-        INSERT INTO usuarios
-        (
-            nombre,
-            correo,
-            password,
-            rol
-        )
-        VALUES(?,?,?,?)
-        `,
-
-        [
-
-            nombre,
-            correo,
-            passwordHash,
-            rol
-
-        ],
-
-        function(err){
-
-            if(err){
-
-                console.log(err);
-
-                return res.status(500).json({
-
-                    mensaje:
-                    "Correo ya registrado"
-
-                });
-
-            }
-
-            res.json({
-
-                mensaje:
-                "Usuario registrado"
-
-            });
-
-        }
-
-    );
-
-});
-
-
-
-// ======================================
-// LOGIN
-// ======================================
-
-app.post("/login",(req,res)=>{
+app.post("/compras", (req, res) => {
 
     const {
-
-        correo,
-        password
-
-    } = req.body;
-
-
-    db.get(
-
-        `
-        SELECT *
-        FROM usuarios
-        WHERE correo = ?
-        `,
-
-        [correo],
-
-        (err,usuario)=>{
-
-            if(err){
-
-                return res.status(500).json({
-
-                    error:err.message
-
-                });
-
-            }
-
-
-            if(!usuario){
-
-                return res.status(401).json({
-
-                    mensaje:
-                    "Usuario no encontrado"
-
-                });
-
-            }
-
-
-            const valido =
-            bcrypt.compareSync(
-
-                password,
-                usuario.password
-
-            );
-
-
-            if(!valido){
-
-                return res.status(401).json({
-
-                    mensaje:
-                    "Contraseña incorrecta"
-
-                });
-
-            }
-
-
-            res.json({
-
-                mensaje:
-                "Login correcto",
-
-                usuario:{
-
-                    id:usuario.id,
-                    nombre:usuario.nombre,
-                    correo:usuario.correo,
-                    rol:usuario.rol
-
-                }
-
-            });
-
-        }
-
-    );
-
-});
-
-
-
-// ======================================
-// REGISTRAR COMPRA
-// ======================================
-
-app.post("/compras",(req,res)=>{
-
-    const {
-
         usuario_id,
         producto_id,
         nombre_producto,
         precio,
         cantidad
-
     } = req.body;
 
 
-    // VALIDAR STOCK
+    // VALIDAR PRODUCTO
     db.get(
 
         `
@@ -675,25 +598,24 @@ app.post("/compras",(req,res)=>{
 
         [producto_id],
 
-        (err,producto)=>{
+        (err, producto) => {
 
-            if(err){
+            if (err) {
 
                 return res.status(500).json({
 
-                    error:err.message
+                    mensaje: "Error servidor"
 
                 });
 
             }
 
 
-            if(!producto){
+            if (!producto) {
 
                 return res.status(404).json({
 
-                    mensaje:
-                    "Producto no encontrado"
+                    mensaje: "Producto no encontrado"
 
                 });
 
@@ -701,12 +623,13 @@ app.post("/compras",(req,res)=>{
 
 
             // VALIDAR STOCK
-            if(producto.cantidad < cantidad){
+            if (
+                producto.cantidad < cantidad
+            ) {
 
                 return res.status(400).json({
 
-                    mensaje:
-                    "Stock insuficiente"
+                    mensaje: "Stock insuficiente"
 
                 });
 
@@ -715,18 +638,15 @@ app.post("/compras",(req,res)=>{
 
             // CALCULOS
             const subtotal =
-
                 Number(precio) *
                 Number(cantidad);
 
 
             const iva =
-
                 subtotal * 0.12;
 
 
             const total =
-
                 subtotal + iva;
 
 
@@ -734,8 +654,8 @@ app.post("/compras",(req,res)=>{
             db.run(
 
                 `
-                INSERT INTO compras
-                (
+                INSERT INTO compras(
+
                     usuario_id,
                     producto_id,
                     nombre_producto,
@@ -744,12 +664,12 @@ app.post("/compras",(req,res)=>{
                     subtotal,
                     iva,
                     total
+
                 )
                 VALUES(?,?,?,?,?,?,?,?)
                 `,
 
                 [
-
                     usuario_id,
                     producto_id,
                     nombre_producto,
@@ -758,16 +678,15 @@ app.post("/compras",(req,res)=>{
                     subtotal,
                     iva,
                     total
-
                 ],
 
-                function(err){
+                function (err) {
 
-                    if(err){
+                    if (err) {
 
                         return res.status(500).json({
 
-                            error:err.message
+                            mensaje: "Error guardando compra"
 
                         });
 
@@ -779,25 +698,22 @@ app.post("/compras",(req,res)=>{
 
                         `
                         UPDATE productos
-                        SET cantidad =
-                        cantidad - ?
+                        SET cantidad = cantidad - ?
                         WHERE id = ?
                         `,
 
                         [
-
                             cantidad,
                             producto_id
-
                         ],
 
-                        function(err){
+                        function (err) {
 
-                            if(err){
+                            if (err) {
 
                                 return res.status(500).json({
 
-                                    error:err.message
+                                    mensaje: "Error actualizando inventario"
 
                                 });
 
@@ -806,19 +722,13 @@ app.post("/compras",(req,res)=>{
 
                             res.json({
 
-    mensaje:
-    "Compra realizada",
+                                mensaje: "Compra realizada",
 
-    subtotal:
-    Number(subtotal),
+                                subtotal,
+                                iva,
+                                total
 
-    iva:
-    Number(iva),
-
-    total:
-    Number(total)
-
-});
+                            });
 
                         }
 
@@ -836,14 +746,14 @@ app.post("/compras",(req,res)=>{
 
 
 
-// ======================================
+// =====================================
 // HISTORIAL COMPRAS
-// ======================================
+// =====================================
 
-app.get("/compras/:usuario_id",(req,res)=>{
+app.get("/compras/:usuario_id", (req, res) => {
 
     const usuario_id =
-    req.params.usuario_id;
+        req.params.usuario_id;
 
 
     db.all(
@@ -857,19 +767,20 @@ app.get("/compras/:usuario_id",(req,res)=>{
 
         [usuario_id],
 
-        (err,rows)=>{
+        (err, compras) => {
 
-            if(err){
+            if (err) {
 
                 return res.status(500).json({
 
-                    error:err.message
+                    mensaje: "Error obteniendo historial"
 
                 });
 
             }
 
-            res.json(rows);
+
+            res.json(compras);
 
         }
 
@@ -879,11 +790,103 @@ app.get("/compras/:usuario_id",(req,res)=>{
 
 
 
-// ======================================
-// INICIAR SERVIDOR
-// ======================================
+// =====================================
+// ESTADISTICAS ADMIN
+// =====================================
 
-app.listen(PORT,()=>{
+app.get("/estadisticas", (req, res) => {
+
+    const datos = {};
+
+
+    db.get(
+
+        `
+        SELECT COUNT(*) AS totalProductos
+        FROM productos
+        `,
+
+        [],
+
+        (err, row) => {
+
+            datos.totalProductos =
+                row.totalProductos;
+
+
+            db.get(
+
+                `
+                SELECT COUNT(*) AS totalCompras
+                FROM compras
+                `,
+
+                [],
+
+                (err, row2) => {
+
+                    datos.totalCompras =
+                        row2.totalCompras;
+
+
+                    db.get(
+
+                        `
+                        SELECT SUM(total) AS ingresos
+                        FROM compras
+                        `,
+
+                        [],
+
+                        (err, row3) => {
+
+                            datos.ingresos =
+                                row3.ingresos || 0;
+
+
+                            db.get(
+
+                                `
+                                SELECT COUNT(*) AS agotados
+                                FROM productos
+                                WHERE cantidad <= 0
+                                `,
+
+                                [],
+
+                                (err, row4) => {
+
+                                    datos.agotados =
+                                        row4.agotados;
+
+
+                                    res.json(datos);
+
+                                }
+
+                            );
+
+                        }
+
+                    );
+
+                }
+
+            );
+
+        }
+
+    );
+
+});
+
+
+
+// =====================================
+// SERVIDOR
+// =====================================
+
+app.listen(PORT, () => {
 
     console.log(
 
